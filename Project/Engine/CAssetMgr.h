@@ -19,6 +19,8 @@ private:
 	map<wstring, Ptr<CAsset>>	m_arrAssetMap[(UINT)ASSET_TYPE::END];
 	bool						m_Changed = false;
 
+	vector<wstring>				m_vecAssetRelativePath;
+
 	int							m_PostProcessTextCnt = 4;
 
 public:
@@ -52,6 +54,8 @@ public:
 
 
 private:
+	void GetContentFiles();
+
 	void CreateEngineMesh();
 	void CreateEngineTexture();
 	void CreateEngineSprite();
@@ -61,7 +65,8 @@ private:
 
 private:
 	void DeleteAsset(ASSET_TYPE _Type, const wstring& _Key);
-
+	void FindAssetName(const wstring& _FolderPath, const wstring& _Filter);
+	void LoadAsset(const path& _Path);
 };
 
 template<typename T>
