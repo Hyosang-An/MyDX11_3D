@@ -115,6 +115,16 @@ void CEditorCameraScript::PerspectiveMove()
 		vPos += vRight * EngineDT * Speed;
 	}
 
+	if (KEY_PRESSED(KEY::Q))
+	{
+		vPos.y -= EngineDT * Speed;
+	}
+
+	if (KEY_PRESSED(KEY::E))
+	{
+		vPos.y += EngineDT * Speed;
+	}
+
 	Transform()->SetRelativePos(vPos);
 
 	//if (KEY_PRESSED(KEY::RBTN))
@@ -146,7 +156,7 @@ void CEditorCameraScript::PerspectiveMove()
 		CKeyMgr::GetInst()->MouseCapture(false);
 	}
 
-	static bool mousecontrol = false;
+	static bool mousecontrol = true;
 	if (KEY_JUST_PRESSED(KEY::ESC))
 		mousecontrol = !mousecontrol;
 
@@ -159,6 +169,8 @@ void CEditorCameraScript::PerspectiveMove()
 		vRot.x += vMouseDragDelta.y * XM_PI * 0.001f;
 		Transform()->SetRelativeRotation(vRot);
 	}
+
+	Vec3 vRot = Transform()->GetRelativeRoatation();
 
 
 }

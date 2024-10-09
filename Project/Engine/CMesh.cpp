@@ -25,6 +25,8 @@ CMesh::~CMesh()
 
 int CMesh::Create(Vtx* _VtxSysMem, UINT _VtxCount, UINT* _IdxSysMem, UINT _IdxCount)
 {
+	SetEngineAsset();
+
 	m_VtxCount = _VtxCount;
 	m_IdxCount = _IdxCount;
 
@@ -72,8 +74,6 @@ int CMesh::Create(Vtx* _VtxSysMem, UINT _VtxCount, UINT* _IdxSysMem, UINT _IdxCo
 		MessageBox(nullptr, L"IndexBuffer 积己 角菩", L"Mesh 积己 角菩", MB_OK);
 		return E_FAIL;
 	}
-
-	SetEngineAsset();
 
 	return S_OK;
 }

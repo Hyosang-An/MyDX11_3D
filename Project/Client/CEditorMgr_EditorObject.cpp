@@ -16,10 +16,12 @@ void CEditorMgr::CreateEditorObject()
 	pEditorCamera->AddComponent(new CCamera);
 	pEditorCamera->AddComponent(new CEditorCameraScript);
 
+	pEditorCamera->Transform()->SetRelativePos(0.f, 0.f, -500.f);
+
 	pEditorCamera->Camera()->SetLayerAll();
 	pEditorCamera->Camera()->SetLayer(31, false);
 	pEditorCamera->Camera()->SetFar(100000.f);
-	pEditorCamera->Camera()->SetProjType(ORTHOGRAPHIC);
+	pEditorCamera->Camera()->SetProjType(PERSPECTIVE);
 
 	m_vecEditorObject.push_back(pEditorCamera);
 	m_EditorCamera = pEditorCamera;

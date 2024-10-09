@@ -66,7 +66,7 @@ private:
 
 	Vec2	m_MousePosInClient;
 	Vec2	m_PrevMousePos;
-	Vec2	m_MouseDragDelta;
+	Vec2	m_MousePosDelta;
 
 	Vec2				m_CapturePos;
 	bool				m_MouseCapture;
@@ -77,7 +77,7 @@ public:
 
 	KEY_STATE GetKeyState(KEY _key) { return m_vecKeyInfo[(UINT)_key].eKeyState; }
 	Vec2 GetMousePosInClient() { return m_MousePosInClient; }
-	Vec2 GetMouseDragDelta() { return m_MouseDragDelta; }
+	Vec2 GetMouseDragDelta() { return m_MousePosDelta; }
 
 	void MouseCapture(bool _bCapture)
 	{

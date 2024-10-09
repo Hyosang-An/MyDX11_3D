@@ -510,5 +510,8 @@
     <FxCompile Include="tilemap.fx">
       <Filter>HLSL\02. Render\2D</Filter>
     </FxCompile>
+    <FxCompile Include="std3d.fx">
+      <Filter>HLSL\02. Render\3D</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
