@@ -14,7 +14,7 @@ CLight2D::CLight2D()
 
 CLight2D::~CLight2D()
 {
-	CRenderMgr::GetInst()->DeregisterLight2D(this);
+
 }
 
 void CLight2D::Begin()

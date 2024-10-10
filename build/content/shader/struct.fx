@@ -6,6 +6,7 @@ struct tLight
 {
     float4 Color; // 빛의 색상
     float4 Ambient; // 환경광	
+    float SpecularCoef; // 반사광 계수
 };
 
 struct tLightInfo
@@ -16,7 +17,7 @@ struct tLightInfo
     float Radius; // 광원의 반경
     float Angle; // 광원 범위 각도
     uint Type; // 광원 종류
-    int3 padding; // 패딩
+    int2 padding; // 패딩
 };
 
 // Particle

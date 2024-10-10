@@ -71,6 +71,20 @@ void CTestLevel::CreateTestLevel()
 	//TestLevel->AddObject(0, pObject);
 
 
+	// 3D 광원 추가
+	pObject = new CGameObject;
+	pObject->SetName(L"Directional Light");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CLight3D);
+
+	pObject->Transform()->SetRelativeRotation(XM_PI / 4.f, XM_PI / 4.f, 0.f);
+
+	pObject->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
+	pObject->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
+	pObject->Light3D()->SetLightAmbient(Vec3(0.15f, 0.15f, 0.15f));
+	pObject->Light3D()->SetSpecularCoefficient(0.5f);
+
+	TestLevel->AddObject(0, pObject);
 
 	// 플레이어 오브젝트
 	CGameObject* pPlayer = new CGameObject;

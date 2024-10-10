@@ -3,6 +3,7 @@
 class CCamera;
 class CGameObject;
 class CLight2D;
+class CLight3D;
 class CStructuredBuffer;
 
 class CRenderMgr :
@@ -24,6 +25,9 @@ private:
 	vector<CLight2D*>       m_vecLight2D;
 	CStructuredBuffer*		m_Light2DBuffer = nullptr;
 
+	vector<CLight3D*>       m_vecLight3D;
+	CStructuredBuffer*		m_Light3DBuffer = nullptr;
+
 	// PostProcess
 	vector<Ptr<CTexture>>   m_vecPostProcessRTTex;
 	Ptr<CTexture>			m_PostProcessDSTex;
@@ -33,7 +37,7 @@ public:
 	void RegisterEditorCamera(CCamera* _Cam) { m_EditorCamera = _Cam; }
 	void AddDebugShapeInfo(const tDebugShapeInfo& _Info) { m_DebugShapeList.push_back(_Info); }
 	void RegisterLight2D(CLight2D* _light);
-	void DeregisterLight2D(CLight2D* _light);
+	void RegisterLight3D(CLight3D* _Light) { m_vecLight3D.push_back(_Light); }
 
 	void PostProcessCopy(int _postProcessRTTex_index);
 

@@ -18,6 +18,7 @@
 #include "CLevel.h"
 
 #include "CLight2D.h"
+#include "CLight3D.h"
 #include "CStructuredBuffer.h"
 
 
@@ -25,6 +26,7 @@
 CRenderMgr::CRenderMgr()
 {
 	m_Light2DBuffer = new CStructuredBuffer;
+	m_Light3DBuffer = new CStructuredBuffer;
 }
 
 CRenderMgr::~CRenderMgr()
@@ -34,6 +36,9 @@ CRenderMgr::~CRenderMgr()
 
 	if (nullptr != m_Light2DBuffer)
 		delete m_Light2DBuffer;
+
+	if (nullptr != m_Light3DBuffer)
+		delete m_Light3DBuffer;
 }
 
 
@@ -139,6 +144,37 @@ void CRenderMgr::RenderStart()
 		m_Light2DBuffer->Binding(11);
 	}
 
+	// Light3D 정보 업데이트 및 바인딩
+	vector<tLightInfo> vecLight3DInfo;
+	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
+	{
+		vecLight3DInfo.push_back(m_vecLight3D[i]->GetLightInfo());
+	}
+
+	if (m_Light3DBuffer->GetElementCount() < vecLight3DInfo.size())
+	{
+		m_Light3DBuffer->Create(sizeof(tLightInfo), (UINT)vecLight3DInfo.size());
+	}
+
+	if (!vecLight3DInfo.empty())
+	{
+		m_Light3DBuffer->SetData(vecLight3DInfo.data());
+		m_Light3DBuffer->Binding(12);
+	}
+
+	// 현재 화면을 렌더링하는 카메라의 월드포즈를 Global 데이터에 전달 (0번 카메라만 전달)
+	CLevel* pCurLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+	CCamera* pCam = nullptr;
+	if (PLAY == pCurLevel->GetState())
+		pCam = m_vecCam[0];
+	else
+		pCam = m_EditorCamera;
+
+	if (pCam == nullptr)
+		g_GlobalData.g_CamWorldPos = Vec3(0.f, 0.f, 0.f);
+	else
+		g_GlobalData.g_CamWorldPos = pCam->Transform()->GetWorldPos();
+
 	// GlobalData 바인딩
 	static CConstBuffer* pGlobalCB = CDevice::GetInst()->GetConstBuffer(CB_TYPE::GLOBAL);
 	pGlobalCB->SetData(&g_GlobalData);
@@ -148,6 +184,7 @@ void CRenderMgr::RenderStart()
 void CRenderMgr::Clear()
 {
 	m_vecLight2D.clear();
+	m_vecLight3D.clear();
 }
 
 void CRenderMgr::RenderDebugShape()
@@ -234,14 +271,5 @@ void CRenderMgr::RegisterLight2D(CLight2D* _light)
 	if (std::find(m_vecLight2D.begin(), m_vecLight2D.end(), _light) == m_vecLight2D.end())
 	{
 		m_vecLight2D.push_back(_light);
-	}
-}
-
-void CRenderMgr::DeregisterLight2D(CLight2D* _light)
-{
-	auto it = std::find(m_vecLight2D.begin(), m_vecLight2D.end(), _light);
-	if (it != m_vecLight2D.end())
-	{
-		m_vecLight2D.erase(it);
 	}
 }
