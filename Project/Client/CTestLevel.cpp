@@ -79,9 +79,9 @@ void CTestLevel::CreateTestLevel()
 	pPlayer->AddComponent(new CMeshRender);
 
 	pPlayer->Transform()->SetRelativePos(0.f, 0.f, 100.f);
-	pPlayer->Transform()->SetRelativeScale(200.f, 200.f, 200.f);
+	pPlayer->Transform()->SetRelativeScale(500.f, 500.f, 500.f);
 
-	pPlayer->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"CubeMesh"));
+	pPlayer->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
 	pPlayer->MeshRender()->SetMaterial(pMtrl);
 
 	TestLevel->AddObject(3, pPlayer);
