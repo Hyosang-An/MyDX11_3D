@@ -4,6 +4,9 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 
+# 대용량 파일 무시
+build/content/texture/LandScapeTexture/*
+
 
 # 기본 엔진 라이브러리 및 기본 스크립트 라이브러리 무시
 External/Library/Engine/**

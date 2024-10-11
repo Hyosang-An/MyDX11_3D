@@ -71,34 +71,87 @@ void CTestLevel::CreateTestLevel()
 	//TestLevel->AddObject(0, pObject);
 
 
-	// 3D 광원 추가
+	//// 3D 광원 추가
+	//pObject = new CGameObject;
+	//pObject->SetName(L"Directional Light");
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CLight3D);
+
+	//pObject->Transform()->SetRelativeRotation(XM_PI / 4.f, XM_PI / 4.f, 0.f);
+
+	//pObject->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
+	//pObject->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
+	//pObject->Light3D()->SetLightAmbient(Vec3(0.15f, 0.15f, 0.15f));
+	//pObject->Light3D()->SetSpecularCoefficient(0.5f);
+
+	//TestLevel->AddObject(0, pObject);
+
+	// 3D Point Light 1
 	pObject = new CGameObject;
-	pObject->SetName(L"Directional Light");
+	pObject->SetName(L"Point Light 1");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CLight3D);
 
+	pObject->Transform()->SetRelativePos(-300.f, 0.f, 0.f);
 	pObject->Transform()->SetRelativeRotation(XM_PI / 4.f, XM_PI / 4.f, 0.f);
 
-	pObject->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
-	pObject->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
-	pObject->Light3D()->SetLightAmbient(Vec3(0.15f, 0.15f, 0.15f));
-	pObject->Light3D()->SetSpecularCoefficient(0.5f);
+	pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	pObject->Light3D()->SetLightColor(Vec3(1.f, 0.5f, 0.5f));
+	pObject->Light3D()->SetLightAmbient(Vec3(0.f, 0.f, 0.f));
+	pObject->Light3D()->SetSpecularCoefficient(0.3f);
+	pObject->Light3D()->SetRadius(800.f);
 
 	TestLevel->AddObject(0, pObject);
 
-	// 플레이어 오브젝트
+	// 3D Point Light 2
+	pObject = new CGameObject;
+	pObject->SetName(L"Point Light 2");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CLight3D);
+
+	pObject->Transform()->SetRelativePos(300.f, 0.f, 0.f);
+	pObject->Transform()->SetRelativeRotation(XM_PI / 4.f, XM_PI / 4.f, 0.f);
+
+	pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	pObject->Light3D()->SetLightColor(Vec3(0.5f, 0.5f, 1.f));
+	pObject->Light3D()->SetLightAmbient(Vec3(0.f, 0.f, 0.f));
+	pObject->Light3D()->SetSpecularCoefficient(0.3f);
+	pObject->Light3D()->SetRadius(800.f);
+
+	TestLevel->AddObject(0, pObject);
+
+	//// 플레이어 오브젝트
+	//CGameObject* pPlayer = new CGameObject;
+	//pPlayer->SetName(L"Player");
+	//pPlayer->AddComponent(new CTransform);
+	//pPlayer->AddComponent(new CMeshRender);
+
+	//pPlayer->Transform()->SetRelativePos(0.f, 0.f, 100.f);
+	//pPlayer->Transform()->SetRelativeScale(500.f, 500.f, 500.f);
+
+	//pPlayer->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
+	//pPlayer->MeshRender()->SetMaterial(pMtrl);
+
+	//TestLevel->AddObject(3, pPlayer);
+
+	// 플레이어 오브젝트 2
 	CGameObject* pPlayer = new CGameObject;
-	pPlayer->SetName(L"Player");
+	pPlayer->SetName(L"Player 2");
 	pPlayer->AddComponent(new CTransform);
 	pPlayer->AddComponent(new CMeshRender);
 
-	pPlayer->Transform()->SetRelativePos(0.f, 0.f, 100.f);
-	pPlayer->Transform()->SetRelativeScale(500.f, 500.f, 500.f);
+	pPlayer->Transform()->SetRelativePos(0.f, -500.f, 0.f);
+	pPlayer->Transform()->SetRelativeScale(1000.f, 1000.f, 1.f);
+	pPlayer->Transform()->SetRelativeRotation(XM_PI / 2.f, 0.f, 0.f);
 
-	pPlayer->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
+	pPlayer->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
 	pPlayer->MeshRender()->SetMaterial(pMtrl);
 
+	Ptr<CTexture> pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\Character.png");
+	pPlayer->MeshRender()->GetMaterial()->SetTexParam(TEX_0, pTex);
+
 	TestLevel->AddObject(3, pPlayer);
+
 
 
 	ChangeLevel(TestLevel, LEVEL_STATE::STOP);

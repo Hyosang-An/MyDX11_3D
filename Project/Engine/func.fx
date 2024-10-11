@@ -52,6 +52,87 @@ void CalculateLight2D(int _LightIdx, float3 _WorldPos, inout tLight _Light)
     }
 }
 
+float3 CalculateLight3D(float3 _ObjectColor, int _LightIdx, float3 _ViewNormal, float3 _ViewPos)
+{
+    tLightInfo LightInfo = g_Light3D[_LightIdx];
+    
+    float LightPow = 0.f;
+    float SpecularPow = 0.f;
+    float Ratio = 1.f;
+    //float SpecularRatio = 1.f;
+    
+    // DirectionalLight 인 경우
+    if (0 == LightInfo.Type)
+    {
+        float3 vLightDir = normalize(mul(float4(LightInfo.WorldDir, 0), matView).xyz);
+        LightPow = saturate(dot(-vLightDir, _ViewNormal));
+        
+        // 반사광 계산
+        // vR = vL + 2 * dot(-vL, vN) * vN;
+        float3 vReflect = normalize(vLightDir + 2 * dot(-vLightDir, _ViewNormal) * _ViewNormal);
+        
+        // eyeDir
+        float3 vEyeDir = normalize(-_ViewPos);
+        
+        // 반사광 계산
+        float powCoef = 15;
+        SpecularPow = pow(saturate(dot(vReflect, vEyeDir)), powCoef);        
+    }
+    
+    
+    // Point Light인 경우
+    else if (1 == LightInfo.Type)
+    {
+        float3 vLightViewPos = mul(float4(LightInfo.WorldPos, 1.f), matView).xyz;
+        float3 vLightDir = normalize(- vLightViewPos + _ViewPos);
+        LightPow = saturate(dot(-vLightDir, _ViewNormal));
+        
+        // 반사광 계산
+        // vR = vL + 2 * dot(-vL, vN) * vN;
+        float3 vReflect = normalize(vLightDir + 2 * dot(-vLightDir, _ViewNormal) * _ViewNormal);
+        
+        // eyeDir
+        float3 vEyeDir = normalize(-_ViewPos);
+        
+        // 반사광 계산
+        float powCoef = 15;
+        SpecularPow = pow(saturate(dot(vReflect, vEyeDir)), powCoef);
+        
+        // 거리에 따른 빛의 세기
+        float dist = distance(vLightViewPos, _ViewPos);
+        float cameraDist = length(_ViewPos);
+        //Ratio = saturate(1.f - (Distance / LightInfo.Radius));
+        Ratio = saturate(cos((PI / 2.f) * saturate(dist / LightInfo.Radius)));
+        //SpecularRatio = saturate(cos((PI / 2.f) * saturate(cameraDist / LightInfo.Radius)));
+    }
+    
+    // Spot Light인 경우
+    else if (2 == LightInfo.Type)
+    {
+        
+    }
+    
+    //// 최종 색상 계산
+    //_Light.Color.rgb += LightInfo.light.Color.rgb * LightPow * Ratio;
+    //_Light.Ambient.rgb += LightInfo.light.Ambient.rgb * Ratio;
+    //_Light.SpecularCoef += LightInfo.light.SpecularCoef * SpecularPow * SpecularRatio;
+    
+    
+    // diffuse + ambient + specular
+    
+    // diffuse
+    float3 diffuse = _ObjectColor * LightInfo.light.Color.rgb * LightPow * Ratio;
+    
+    // ambient
+    float3 ambient = _ObjectColor * LightInfo.light.Ambient.rgb * Ratio;
+    
+    // specular
+    float3 specular = LightInfo.light.Color.rgb * LightInfo.light.SpecularCoef * SpecularPow * Ratio;
+    
+    return diffuse + ambient + specular;
+    
+}
+
 
 float3 GetRandom(in Texture2D _NoiseTexture, uint _ThreadID, uint _maxThreadId)
 {

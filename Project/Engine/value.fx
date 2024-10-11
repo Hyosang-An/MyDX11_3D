@@ -81,11 +81,11 @@ cbuffer GLOBAL_DATA : register(b3)
     float g_Time;
     float g_EngineTime;
     
-    // 렌더타겟의 해상도 정보
-    float2 g_Resolution;
-    
     // 렌더링을 할때의 카메라(시점)의 월드 위치
     float4 g_CamWorldPos;
+    
+    // 렌더타겟의 해상도 정보
+    float2 g_Resolution;
     
     // 바인딩 된 구조화버퍼에 광원이 몇개 들어있는지
     int g_Light2DCount;
