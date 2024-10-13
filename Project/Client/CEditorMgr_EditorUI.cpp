@@ -16,6 +16,8 @@
 #include "SC_Detail.h"
 #include "FlipBookEditor.h"
 
+#include "SceneUI.h"
+
 #include "ParamUI.h"
 
 #include "IconsFontAwesome6/IconsFontAwesome6.h"
@@ -171,6 +173,13 @@ void CEditorMgr::CreateEditorUI()
     pUI->SetActive(false);
     pUI->SetName("FlipBookEditor");
     m_mapUI.insert(make_pair(pUI->GetName(), pUI));
+
+
+
+ //   // Scene UI Test Сп
+	//pUI = new SceneUI;
+	//pUI->SetName("SceneUI");
+	//m_mapUI.insert(make_pair(pUI->GetName(), pUI));
 }
 
 

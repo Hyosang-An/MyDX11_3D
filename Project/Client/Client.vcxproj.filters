@@ -136,6 +136,9 @@
     <Filter Include="EditorUI\01. Inspector\ComponentUI\09. Light3DUI">
       <UniqueIdentifier>{90c68a42-6533-40ab-8057-1573e381202e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EditorUI\SceneUI">
+      <UniqueIdentifier>{4f42edff-0193-4e78-9337-1d1398553e0f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -309,6 +312,9 @@
     <ClInclude Include="Light3DUI.h">
       <Filter>EditorUI\01. Inspector\ComponentUI\09. Light3DUI</Filter>
     </ClInclude>
+    <ClInclude Include="SceneUI.h">
+      <Filter>EditorUI\SceneUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -467,6 +473,9 @@
     </ClCompile>
     <ClCompile Include="Light3DUI.cpp">
       <Filter>EditorUI\01. Inspector\ComponentUI\09. Light3DUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneUI.cpp">
+      <Filter>EditorUI\SceneUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

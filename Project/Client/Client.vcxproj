@@ -194,6 +194,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PrefabUI.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SceneUI.h" />
     <ClInclude Include="ScriptUI.h" />
     <ClInclude Include="SC_AtlasView.h" />
     <ClInclude Include="SC_Detail.h" />
@@ -255,6 +256,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PrefabUI.cpp" />
+    <ClCompile Include="SceneUI.cpp" />
     <ClCompile Include="ScriptUI.cpp" />
     <ClCompile Include="SC_AtlasView.cpp" />
     <ClCompile Include="SC_Detail.cpp" />

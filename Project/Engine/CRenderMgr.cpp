@@ -98,6 +98,12 @@ void CRenderMgr::Tick()
 		}
 	}
 
+	//// Scene UI Test¿ë
+	//Ptr<CTexture> pRTTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"RenderTargetTex");
+	//Ptr<CTexture> pSceneTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"RTTex_For_SceneUI");
+	//if (pSceneTex != nullptr)
+	//	CONTEXT->CopyResource(pSceneTex->GetTex2D().Get(), pRTTex->GetTex2D().Get());
+
 	// Debug Render
 	RenderDebugShape();
 
