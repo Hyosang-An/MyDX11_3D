@@ -21,6 +21,8 @@ HINSTANCE g_hInst = nullptr;                    // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
+bool g_bClientInitiated = false;
+
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -131,7 +133,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     g_hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   HWND hWnd = CreateWindowW(L"MyWindowClass", szTitle, WS_OVERLAPPEDWINDOW,
+   HWND hWnd = CreateWindowW(L"MyWindowClass", szTitle, WS_OVERLAPPEDWINDOW, //& ~WS_SIZEBOX, // 창 크기 변경 불가 옵션
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
@@ -160,6 +162,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    // 테스트용 레벨 초기상태 만들기
    CTestLevel::CreateTestLevel();
 
+   g_bClientInitiated = true;
    return TRUE;
 }
 
@@ -183,6 +186,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
+    case WM_SIZE:
+        if (g_bClientInitiated)
+        {
+            // lParam의 LOWORD는 클라이언트의 너비, HIWORD는 클라이언트의 높이를 의미합니다. (윈도우 전체 사이즈가 아님!)
+            int newWidth = LOWORD(lParam);
+            int newHeight = HIWORD(lParam);
+
+            CDevice::GetInst()->ResizeResolution(newWidth, newHeight);
+        }
+        break;
+
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);

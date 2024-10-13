@@ -30,7 +30,7 @@ private:
 
 	// PostProcess
 	vector<Ptr<CTexture>>   m_vecPostProcessRTTex;
-	Ptr<CTexture>			m_PostProcessDSTex;
+	//Ptr<CTexture>			m_PostProcessDSTex;
 
 public:
 	void RegisterCamera(CCamera* _cam, int _camPriority);

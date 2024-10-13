@@ -422,3 +422,59 @@ int CDevice::CreateSamplerState()
 
 	return S_OK;
 }
+
+void CDevice::ResizeResolution(UINT _newWidth, UINT _newHeight)
+{
+	if (_newWidth == 0 || _newHeight == 0)
+	{
+		// 창의 크기가 유효하지 않으면 처리 중단
+		return;
+	}
+
+	m_vResolution.x = static_cast<float>(_newWidth);
+	m_vResolution.y = static_cast<float>(_newHeight);
+
+	// 기존의 렌더 타겟 뷰, 깊이/스텐실 뷰 해제
+	if (m_RTTex.Get())
+	{
+		m_RTTex->GetRTV().Reset();
+	}
+	if (m_DSTex.Get())
+	{
+		m_DSTex->GetDSV().Reset();
+	}
+
+	m_Context->OMSetRenderTargets(0, nullptr, nullptr);
+
+	// 텍스처 리소스 해제 및 관리자의 리소스 맵에서 제거
+	m_RTTex = nullptr; // 참조 카운트를 0으로 만들어서 메모리 해제
+	m_DSTex = nullptr; // 참조 카운트를 0으로 만들어서 메모리 해제
+	CAssetMgr::GetInst()->m_arrAssetMap[(UINT)ASSET_TYPE::TEXTURE].erase(L"RenderTargetTex");
+	CAssetMgr::GetInst()->m_arrAssetMap[(UINT)ASSET_TYPE::TEXTURE].erase(L"DepthStencilTex");
+
+	// 스왑 체인 크기 조정
+	HRESULT hr = m_SwapChain->ResizeBuffers(0, _newWidth, _newHeight, DXGI_FORMAT_UNKNOWN, 0);
+	if (FAILED(hr))
+	{
+		MessageBox(nullptr, L"스왑 체인 크기 조정 실패", L"창 크기 변경 실패", MB_OK);
+		return;
+	}
+
+	// 새로운 백 버퍼로부터 렌더 타겟 뷰 생성
+	if (FAILED(CreateView()))
+	{
+		MessageBox(nullptr, L"View 재생성 실패", L"창 크기 변경 실패", MB_OK);
+		return;
+	}
+
+	// 새로운 뷰포트 설정
+	D3D11_VIEWPORT viewport = {};
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.Width = m_vResolution.x;
+	viewport.Height = m_vResolution.y;
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
+
+	m_Context->RSSetViewports(1, &viewport);
+}

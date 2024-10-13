@@ -13,8 +13,10 @@ private:
 
 private:
     HWND			m_hWnd;
-    POINT			m_ptResolution;
+    //POINT			m_ptResolution;
     FMOD::System*   m_FMODSystem;  // FMOD 관리자 클래스
+
+    Vec2            m_prevWindowModeResolution;
 
 public:
     HWND GetMainWnd() { return m_hWnd; }
@@ -23,5 +25,8 @@ public:
     void Progress();
     void ChangeWindowScale(UINT _width, UINT _height);
     FMOD::System* GetFMODSystem() { return m_FMODSystem; }
+
+    void ResizeWindowResolution(UINT _newWidth, UINT _newHeight);
+    void ToggleFullScreen();
 };
 

@@ -3,6 +3,7 @@
 #include "TransformUI.h"
 #include "Collider2DUI.h"
 #include "Light2DUI.h"
+#include "Light3DUI.h"
 #include "CameraUI.h"
 #include "MeshRenderUI.h"
 #include "FlipBookComUI.h"

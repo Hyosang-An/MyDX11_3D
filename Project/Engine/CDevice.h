@@ -40,6 +40,8 @@ public:
 	void Present() { m_SwapChain->Present(0, 0); }
 	Vec2 GetResolution() { return m_vResolution; }
 
+	void ResizeResolution(UINT _newWidth, UINT _newHeight);
+
 private:
 	int CreateSwapChain();
 	int CreateView();

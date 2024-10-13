@@ -11,6 +11,7 @@ class CAssetMgr
 private:
 	friend class CSingleton<CAssetMgr>;
 	friend class CTaskMgr;
+	friend class CDevice;
 
 	CAssetMgr();
 	~CAssetMgr();

@@ -46,6 +46,11 @@ void CCamera::Begin()
 
 void CCamera::FinalTick()
 {
+	Vec2 vResolution = CDevice::GetInst()->GetResolution();
+	m_Width = vResolution.x;
+	m_Height = vResolution.y;
+	m_AspectRatio = m_Width / m_Height;
+
 	/*Vec3 vWorldPos = Transform()->GetRelativePos();
 
 	if (KEY_PRESSED(KEY::LEFT))
