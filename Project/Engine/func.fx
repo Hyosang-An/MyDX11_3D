@@ -109,6 +109,30 @@ float3 CalculateLight3D(float3 _ObjectColor, int _LightIdx, float3 _ViewNormal, 
     // Spot Light인 경우
     else if (2 == LightInfo.Type)
     {
+        // Spot Light 각도와 방향
+        float angle = LightInfo.Angle;
+        // view 공간에서 광원의 위치
+        float3 vLightViewPos = mul(float4(LightInfo.WorldPos, 1.f), matView).xyz;
+        // view 공간에서 픽셀이 spot light 내부에 있는지 확인
+        float3 spotlightDir_View = normalize(mul(float4(LightInfo.WorldDir, 0.f), matView).xyz);
+        
+        if (dot(normalize(_ViewPos - vLightViewPos), spotlightDir_View) < cos(angle))
+            return float3(0.f, 0.f, 0.f);
+        
+        // diffuse
+        float3 vLightDir = normalize(-vLightViewPos + _ViewPos);
+        LightPow = saturate(dot(-vLightDir, _ViewNormal));
+        
+        // specular
+        // vR = vL + 2 * dot(-vL, vN) * vN;
+        float3 vReflect = normalize(vLightDir + 2 * dot(-vLightDir, _ViewNormal) * _ViewNormal);
+        float3 vEyeDir = normalize(-_ViewPos);
+        float powCoef = 25;
+        SpecularPow = pow(saturate(dot(vReflect, vEyeDir)), powCoef);
+        
+        // 거리에 따른 빛의 세기
+        float dist = distance(vLightViewPos, _ViewPos);
+        Ratio = saturate(cos((PI / 2.f) * saturate(dist / LightInfo.Radius)));
         
     }
     

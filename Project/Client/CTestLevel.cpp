@@ -71,7 +71,7 @@ void CTestLevel::CreateTestLevel()
 	//TestLevel->AddObject(0, pObject);
 
 
-	//// 3D 광원 추가
+	//// 3D Directional Light
 	//pObject = new CGameObject;
 	//pObject->SetName(L"Directional Light");
 	//pObject->AddComponent(new CTransform);
@@ -86,39 +86,58 @@ void CTestLevel::CreateTestLevel()
 
 	//TestLevel->AddObject(0, pObject);
 
-	// 3D Point Light 1
+	//// 3D Point Light 1
+	//pObject = new CGameObject;
+	//pObject->SetName(L"Point Light 1");
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CLight3D);
+
+	//pObject->Transform()->SetRelativePos(-300.f, 0.f, 0.f);
+	//pObject->Transform()->SetRelativeRotation(XM_PI / 4.f, XM_PI / 4.f, 0.f);
+
+	//pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	//pObject->Light3D()->SetLightColor(Vec3(1.f, 0.5f, 0.5f));
+	//pObject->Light3D()->SetLightAmbient(Vec3(0.f, 0.f, 0.f));
+	//pObject->Light3D()->SetSpecularCoefficient(0.3f);
+	//pObject->Light3D()->SetRadius(800.f);
+
+	//TestLevel->AddObject(0, pObject);
+
+	//// 3D Point Light 2
+	//pObject = new CGameObject;
+	//pObject->SetName(L"Point Light 2");
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CLight3D);
+
+	//pObject->Transform()->SetRelativePos(300.f, 0.f, 0.f);
+	//pObject->Transform()->SetRelativeRotation(XM_PI / 4.f, XM_PI / 4.f, 0.f);
+
+	//pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	//pObject->Light3D()->SetLightColor(Vec3(0.5f, 0.5f, 1.f));
+	//pObject->Light3D()->SetLightAmbient(Vec3(0.f, 0.f, 0.f));
+	//pObject->Light3D()->SetSpecularCoefficient(0.3f);
+	//pObject->Light3D()->SetRadius(800.f);
+
+	//TestLevel->AddObject(0, pObject);
+
+	// 3D Spot Light
 	pObject = new CGameObject;
-	pObject->SetName(L"Point Light 1");
+	pObject->SetName(L"Spot Light");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CLight3D);
 
-	pObject->Transform()->SetRelativePos(-300.f, 0.f, 0.f);
-	pObject->Transform()->SetRelativeRotation(XM_PI / 4.f, XM_PI / 4.f, 0.f);
+	pObject->Transform()->SetRelativePos(0.f, 500.f, 0.f);
+	pObject->Transform()->SetRelativeRotation(0.5f * XM_PI, 0.f, 0.f);
 
-	pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
-	pObject->Light3D()->SetLightColor(Vec3(1.f, 0.5f, 0.5f));
+	pObject->Light3D()->SetLightType(LIGHT_TYPE::SPOT);
+	pObject->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
 	pObject->Light3D()->SetLightAmbient(Vec3(0.f, 0.f, 0.f));
-	pObject->Light3D()->SetSpecularCoefficient(0.3f);
-	pObject->Light3D()->SetRadius(800.f);
+	pObject->Light3D()->SetSpecularCoefficient(0.5f);
+	pObject->Light3D()->SetAngle(15.f * XM_PI / 180);
+	pObject->Light3D()->SetRadius(2000.f);
 
 	TestLevel->AddObject(0, pObject);
 
-	// 3D Point Light 2
-	pObject = new CGameObject;
-	pObject->SetName(L"Point Light 2");
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CLight3D);
-
-	pObject->Transform()->SetRelativePos(300.f, 0.f, 0.f);
-	pObject->Transform()->SetRelativeRotation(XM_PI / 4.f, XM_PI / 4.f, 0.f);
-
-	pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
-	pObject->Light3D()->SetLightColor(Vec3(0.5f, 0.5f, 1.f));
-	pObject->Light3D()->SetLightAmbient(Vec3(0.f, 0.f, 0.f));
-	pObject->Light3D()->SetSpecularCoefficient(0.3f);
-	pObject->Light3D()->SetRadius(800.f);
-
-	TestLevel->AddObject(0, pObject);
 
 	//// 플레이어 오브젝트
 	//CGameObject* pPlayer = new CGameObject;

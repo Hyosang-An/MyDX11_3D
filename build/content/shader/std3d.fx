@@ -51,8 +51,8 @@ float4 PS_Std3D(VS_OUT _in) : SV_Target
     if (g_btex_0)
         vOutColor = g_tex_0.Sample(g_sam_0, _in.vUV);
     
-    if (vOutColor.a == 0.f)
-        discard;
+    //if (vOutColor.a == 0.f)
+    //    discard;
     
     tLight light = (tLight) 0.f;
     

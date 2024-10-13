@@ -1,47 +1,42 @@
 #include "pch.h"
-#include "Light2DUI.h"
+#include "Light3DUI.h"
 
 #include <Engine/CGameObject.h>
-#include <Engine/CLight2D.h>
+#include <Engine/CLight3D.h>
 
-Light2DUI::Light2DUI()
-	: ComponentUI(COMPONENT_TYPE::LIGHT2D)
+Light3DUI::Light3DUI()
+	: ComponentUI(COMPONENT_TYPE::LIGHT3D)
 {
 }
 
-Light2DUI::~Light2DUI()
+Light3DUI::~Light3DUI()
 {
 }
 
-void Light2DUI::Update()
+void Light3DUI::Update()
 {
 	ImVec2 initial_content_pos = ImGui::GetCursorPos();
 
 
-
 	Title();
 
-	CLight2D* pLight = GetTargetObject()->Light2D();
+	CLight3D* pLight = GetTargetObject()->Light3D();
 
 	// 광원 종류
-	LIGHT_TYPE	Type = pLight->GetLightType();
+	LIGHT_TYPE light_type = pLight->GetLightType();
 
 	const char* items[] = { "DIRECTIONAL", "POINT", "SPOT" };
-	const char* combo_preview_value = items[(UINT)Type];
+	const char* combo_preview_value = items[(UINT)light_type];
 
-	ImGui::Text("Light Type");
-	ImGui::SameLine(100);
-	ImGui::SetNextItemWidth(180);
-
-	if (ImGui::BeginCombo("##2DLightTypeCombo", combo_preview_value))
+	if (ImGui::BeginCombo("##3DLightTypeCombo", combo_preview_value))
 	{
 		for (int i = 0; i < 3; i++)
 		{
-			const bool is_selected = ((UINT)Type == i);
+			const bool is_selected = ((UINT)light_type == i);
 
 			if (ImGui::Selectable(items[i], is_selected))
 			{
-				Type = (LIGHT_TYPE)i;
+				light_type = (LIGHT_TYPE)i;
 			}
 
 			// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
@@ -51,8 +46,7 @@ void Light2DUI::Update()
 		ImGui::EndCombo();
 	}
 
-	pLight->SetLightType(Type);
-
+	pLight->SetLightType(light_type);
 
 	// 광원 색상정보	
 	const tLightInfo& info = pLight->GetLightInfo();
@@ -66,7 +60,7 @@ void Light2DUI::Update()
 	ImGui::ColorEdit3("##LightAmbient", info.light.Ambient);
 
 	// 광원의 반경 ( Point, Spot )
-	ImGui::BeginDisabled(Type == LIGHT_TYPE::DIRECTIONAL);
+	ImGui::BeginDisabled(light_type == LIGHT_TYPE::DIRECTIONAL);
 
 	ImGui::Text("Light Radius");
 	ImGui::SameLine(100);
@@ -76,7 +70,7 @@ void Light2DUI::Update()
 
 
 	// 광원의 범위 각도
-	ImGui::BeginDisabled(Type != LIGHT_TYPE::SPOT);
+	ImGui::BeginDisabled(light_type != LIGHT_TYPE::SPOT);
 
 	float Angle = info.Angle;
 	Angle = (Angle / XM_PI) * 180.f;
@@ -88,10 +82,17 @@ void Light2DUI::Update()
 	Angle = (Angle / 180.f) * XM_PI;
 	pLight->SetAngle(Angle);
 
+	ImGui::Text("Specular Coefficient");
+	ImGui::SameLine(100);
+	ImGui::DragFloat("##SpecularCoef", (float*)&info.light.SpecularCoef, 0.01f, 0.f, 1.f);
+
 	ImGui::EndDisabled();
+
 
 
 	ImVec2 last_content_pos = ImGui::GetCursorPos();
 	ImVec2 content_size = ImVec2(last_content_pos.x - initial_content_pos.x, last_content_pos.y - initial_content_pos.y);
 	SetChildSize(content_size);
 }
+
+
