@@ -175,6 +175,26 @@ void CTestLevel::CreateTestLevel()
 
 	TestLevel->AddObject(3, pPlayer);
 
+	// SkyBox Ãß°¡
+	CGameObject* pSkyBox = new CGameObject;
+	pSkyBox->SetName(L"SkyBox");
+
+	pSkyBox->AddComponent(new CTransform);
+	pSkyBox->AddComponent(new CSkyBox);
+
+	pSkyBox->Transform()->SetRelativePos(0.f, 0.f, 0.f);
+	pSkyBox->Transform()->SetRelativeScale(1000.f, 1000.f, 1000.f);
+
+	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\SkyWater.dds");
+	pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
+	pSkyBox->SkyBox()->SetSkyBoxType(CUBE);		
+
+	//Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\Sky01.png");
+	//pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
+	//pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);
+
+	TestLevel->AddObject(0, pSkyBox);
+
 
 
 	ChangeLevel(TestLevel, LEVEL_STATE::STOP);

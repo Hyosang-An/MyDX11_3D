@@ -41,6 +41,8 @@ public:
 
 	void PostProcessCopy(int _postProcessRTTex_index);
 
+	CCamera* GetPOVCam();
+
 private:
 	void SetPostProcessTex();
 	void RenderStart();

@@ -33,9 +33,11 @@ public:
 public:
     virtual void FinalTick() = 0;
     virtual void Render() = 0;
+    virtual void SaveToFile(FILE* _File) = 0;   // 파일에 컴포넌트의 정보를 저장
+    virtual void LoadFromFile(FILE* _File) = 0; // 파일에 컴포넌트의 정보를 로드
 
 protected:
-    void SaveDataToFile(FILE* _File);
-    void LoadDataFromFile(FILE* _File);
+    void SaveAssetDataToFile(FILE* _File);
+    void LoadAssetDataFromFile(FILE* _File);
 };
 

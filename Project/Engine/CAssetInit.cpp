@@ -719,6 +719,20 @@ void CAssetMgr::CreateEngineGraphicShader()
 	AddAsset(L"ParticleRenderShader", pShader);
 
 
+	// SkyBoxShader
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\skybox.fx", "VS_SkyBox");
+	pShader->CreatePixelShader(L"shader\\skybox.fx", "PS_SkyBox");
+	pShader->SetRSType(RS_TYPE::CULL_FRONT);	// SkyBox는 카메라가 안쪽을 보기 때문에 Front로 설정
+	pShader->SetDSType(DS_TYPE::LESS_EQUAL);  // NDC좌표계에서 z값이 1이므로 LESS_EQUAL로 설정 (Less로 하면 SkyBox가 안 보임)
+	pShader->SetBSType(BS_TYPE::DEFAULT);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_OPAQUE);
+
+	pShader->AddTexParam(TEX_0, "Albedo Texture");
+
+	AddAsset(L"SkyBoxShader", pShader);
+
+
 	// GrayFilterShader
 	pShader = new CGraphicShader;
 	pShader->CreateVertexShader(L"shader\\postprocess_0.fx", "VS_Screen");
@@ -832,6 +846,11 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"ParticleRenderShader"));
 	AddAsset(L"ParticleRenderMtrl", pMtrl);
+
+	// SkyBoxMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"SkyBoxShader"));
+	AddAsset(L"SkyBoxMtrl", pMtrl);
 
 	// GrayFilterMtrl
 	pMtrl = new CMaterial(true);

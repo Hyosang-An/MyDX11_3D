@@ -40,10 +40,10 @@ void CMeshRender::Render()
 
 void CMeshRender::SaveToFile(FILE* _File)
 {
-	SaveDataToFile(_File);
+	SaveAssetDataToFile(_File);
 }
 
 void CMeshRender::LoadFromFile(FILE* _File)
 {
-	LoadDataFromFile(_File);
+	LoadAssetDataFromFile(_File);
 }

@@ -37,6 +37,7 @@ public:
     class CLight2D* Light2D() { return m_Owner->Light2D(); }
 	class CLight3D* Light3D() { return m_Owner->Light3D(); }
     class CParticleSystem* ParticleSystem() { return m_Owner->ParticleSystem(); }
+	class CSkyBox* SkyBox() { return m_Owner->SkyBox(); }
     
 
 

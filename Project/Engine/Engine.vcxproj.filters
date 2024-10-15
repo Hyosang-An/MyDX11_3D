@@ -163,6 +163,9 @@
     <ClInclude Include="CLight3D.h">
       <Filter>08. Component\09. Light3D</Filter>
     </ClInclude>
+    <ClInclude Include="CSkyBox.h">
+      <Filter>08. Component\RenderComponent\05. SkyBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -302,6 +305,9 @@
     </ClCompile>
     <ClCompile Include="CLight3D.cpp">
       <Filter>08. Component\09. Light3D</Filter>
+    </ClCompile>
+    <ClCompile Include="CSkyBox.cpp">
+      <Filter>08. Component\RenderComponent\05. SkyBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -520,6 +526,9 @@
       <Filter>HLSL\02. Render\2D</Filter>
     </FxCompile>
     <FxCompile Include="std3d.fx">
+      <Filter>HLSL\02. Render\3D</Filter>
+    </FxCompile>
+    <FxCompile Include="skybox.fx">
       <Filter>HLSL\02. Render\3D</Filter>
     </FxCompile>
   </ItemGroup>

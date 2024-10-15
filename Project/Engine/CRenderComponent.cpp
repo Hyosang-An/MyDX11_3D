@@ -61,14 +61,14 @@ Ptr<CMaterial> CRenderComponent::GetDynamicMaterial()
 }
 
 
-void CRenderComponent::SaveDataToFile(FILE* _File)
+void CRenderComponent::SaveAssetDataToFile(FILE* _File)
 {
 	SaveAssetRef(m_Mesh, _File);
 	SaveAssetRef(m_Mtrl, _File);
 	SaveAssetRef(m_SharedMtrl, _File);
 }
 
-void CRenderComponent::LoadDataFromFile(FILE* _File)
+void CRenderComponent::LoadAssetDataFromFile(FILE* _File)
 {
 	LoadAssetRef(m_Mesh, _File);
 	LoadAssetRef(m_Mtrl, _File);

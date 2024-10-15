@@ -163,7 +163,7 @@ void CTileMap::SetAtlasTileResolution(Vec2 _TileResolution)
 void CTileMap::SaveToFile(FILE* _File)
 {
 	// 부모클래스인 RenderComponent 의 SaveToFile 호출
-	SaveDataToFile(_File);
+	SaveAssetDataToFile(_File);
 
 	fwrite(&m_Col, sizeof(int), 1, _File);
 	fwrite(&m_Row, sizeof(int), 1, _File);
@@ -183,7 +183,7 @@ void CTileMap::SaveToFile(FILE* _File)
 void CTileMap::LoadFromFile(FILE* _File)
 {
 	// 부모클래스인 RenderComponent 의 LoadFromFile 호출
-	LoadDataFromFile(_File);
+	LoadAssetDataFromFile(_File);
 	
 	int col = 0;
 	int row = 0;
