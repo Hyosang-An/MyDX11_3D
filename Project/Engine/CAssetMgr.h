@@ -52,10 +52,10 @@ public:
 
 	Ptr<CTexture> CreateTexture(wstring _strKey, ComPtr<ID3D11Texture2D> _Tex2D);
 
-
+	void GetContentFiles();
 
 private:
-	void GetContentFiles();
+
 
 	void CreateEngineMesh();
 	void CreateEngineTexture();
