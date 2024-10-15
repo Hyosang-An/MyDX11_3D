@@ -146,19 +146,34 @@ void CEditorCameraScript::PerspectiveMove()
 	//	CKeyMgr::GetInst()->MouseCapture(false);
 	//}
 
+
+
+	static bool mousecontrol = false;
+	//if (KEY_JUST_PRESSED(KEY::ESC))
+	//	mousecontrol = !mousecontrol;
+	if (KEY_JUST_PRESSED(KEY::LBTN) && KEY_PRESSED(KEY::ALT))
+	{
+		mousecontrol = true;
+	}
+
+	else if (KEY_RELEASED(KEY::LBTN) || KEY_RELEASED(KEY::ALT))
+	{
+		mousecontrol = false;
+	}
+
 	if (KEY_JUST_PRESSED(KEY::RBTN))
 	{
 		CKeyMgr::GetInst()->MouseCapture(true);
+		mousecontrol = true;
+
 	}
 
 	else if (KEY_RELEASED(KEY::RBTN))
 	{
 		CKeyMgr::GetInst()->MouseCapture(false);
-	}
+		mousecontrol = false;
 
-	static bool mousecontrol = true;
-	if (KEY_JUST_PRESSED(KEY::ESC))
-		mousecontrol = !mousecontrol;
+	}
 
 	if (mousecontrol)
 	{
