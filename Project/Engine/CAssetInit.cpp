@@ -651,8 +651,8 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->SetDSType(DS_TYPE::LESS);
 	pShader->SetBSType(BS_TYPE::DEFAULT);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_OPAQUE);
-
-	pShader->AddScalarParam(INT_0, "Light CalcType");
+	pShader->AddTexParam(TEX_0, "Albedo Texture");
+	pShader->AddTexParam(TEX_1, "Normal Texture");
 	AddAsset(L"Std3DShader", pShader);
 
 
