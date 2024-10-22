@@ -20,6 +20,19 @@ struct tLightInfo
     int2 padding; // 패딩
 };
 
+
+// 쉐이더에서만 사용되는 구조체
+struct tPhongShadingLight 
+{
+    float3 Diffuse;
+    float3 Ambient;
+    float3 Specular;
+    
+    int3 padding;
+};
+
+
+
 // Particle
 struct tParticle
 {

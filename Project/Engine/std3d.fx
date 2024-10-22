@@ -112,15 +112,23 @@ float4 PS_Std3D(VS_OUT _in) : SV_Target
     }
     
     
-    float3 accLight = float3 (0.f, 0.f, 0.f);
+    tPhongShadingLight accLight = (tPhongShadingLight) 0.f;
     
     for (int i = 0; i < g_Light3DCount; ++i)
     {
-        accLight += CalculateLight3D(vOutColor.xyz, i, vViewNormal, _in.vViewPos);
+        tPhongShadingLight Light = CalculateLight3D(i, vViewNormal, _in.vViewPos);
+        
+        accLight.Diffuse += Light.Diffuse;
+        accLight.Ambient += Light.Ambient;
+        accLight.Specular += Light.Specular;
     }
     
-    vOutColor.xyz = accLight;
+    // 계산한 빛을 물체의 색상에 적용
     
+    vOutColor.xyz = vOutColor.rgb * accLight.Diffuse +
+                    vOutColor.rgb * accLight.Ambient +
+                    accLight.Specular;
+    vOutColor.w = 1.f;
         
     return vOutColor;
 }

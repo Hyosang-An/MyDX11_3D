@@ -36,12 +36,16 @@ private:
 	// MRT
 	CMRT* m_arrMRT[(UINT)MRT_TYPE::END] = {};
 
+	// ∫¥«’ Ω¶¿Ã¥ı
+	Ptr<CMesh>              m_RectMesh;
+	Ptr<CMaterial>          m_MergeMtrl;
+
 public:
 	void RegisterCamera(CCamera* _cam, int _camPriority);
 	void RegisterEditorCamera(CCamera* _Cam) { m_EditorCamera = _Cam; }
 	void AddDebugShapeInfo(const tDebugShapeInfo& _Info) { m_DebugShapeList.push_back(_Info); }
 	void RegisterLight2D(CLight2D* _light);
-	void RegisterLight3D(CLight3D* _Light) { m_vecLight3D.push_back(_Light); }
+	int RegisterLight3D(CLight3D* _Light) { m_vecLight3D.push_back(_Light); return m_vecLight3D.size() - 1; }
 
 	void PostProcessCopy(int _postProcessRTTex_index);
 
@@ -60,6 +64,7 @@ private:
 
 	void CreateMRT();
 	void ClearMRT();
+	void CreateMaterial();
 
 public:
 	void Init();

@@ -110,7 +110,7 @@ enum class BS_TYPE
 	DEFAULT,
 	ALPHABLEND_COVERAGE,
 	ALPHABLEND,
-	ONE_ONE,
+	ONE_ONE, // 기존의 렌더타겟에 픽셀쉐이더에서 계산된 값을 1:1로 더한다.
 	END,
 };
 

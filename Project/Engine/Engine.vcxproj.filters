@@ -543,5 +543,11 @@
     <FxCompile Include="std3d_deferred.fx">
       <Filter>HLSL\02. Render\3D</Filter>
     </FxCompile>
+    <FxCompile Include="light.fx">
+      <Filter>HLSL\02. Render\3D</Filter>
+    </FxCompile>
+    <FxCompile Include="merge.fx">
+      <Filter>HLSL\02. Render\3D</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

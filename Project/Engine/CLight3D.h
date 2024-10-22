@@ -4,7 +4,12 @@ class CLight3D :
     public CComponent
 {
 private:
-    tLightInfo      m_Info;
+    tLightInfo      m_Info = {};
+
+    int             m_LightIdx = -1;
+
+    Ptr<CMesh>      m_VolumeMesh;
+    Ptr<CMaterial>  m_LightMtrl;
 
 public:
     void SetLightType(LIGHT_TYPE _Type);
@@ -25,6 +30,8 @@ public:
 
 public:
     virtual void FinalTick() override;
+    void Render();
+
     virtual void SaveToFile(FILE* _File) override;
     virtual void LoadFromFile(FILE* _File) override;
 public:

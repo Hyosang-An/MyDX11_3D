@@ -52,7 +52,7 @@ void CalculateLight2D(int _LightIdx, float3 _WorldPos, inout tLight _Light)
     }
 }
 
-float3 CalculateLight3D(float3 _ObjectColor, int _LightIdx, float3 _ViewNormal, float3 _ViewPos)
+tPhongShadingLight CalculateLight3D(int _LightIdx, float3 _ViewNormal, float3 _ViewPos)
 {
     tLightInfo LightInfo = g_Light3D[_LightIdx];
     
@@ -60,6 +60,8 @@ float3 CalculateLight3D(float3 _ObjectColor, int _LightIdx, float3 _ViewNormal, 
     float SpecularPow = 0.f;
     float Ratio = 1.f;
     //float SpecularRatio = 1.f;
+    
+    tPhongShadingLight light = (tPhongShadingLight) 0.f;
     
     // DirectionalLight 인 경우
     if (0 == LightInfo.Type)
@@ -116,8 +118,9 @@ float3 CalculateLight3D(float3 _ObjectColor, int _LightIdx, float3 _ViewNormal, 
         // view 공간에서 픽셀이 spot light 내부에 있는지 확인
         float3 spotlightDir_View = normalize(mul(float4(LightInfo.WorldDir, 0.f), matView).xyz);
         
+         // spot light 범위 밖인 경우 
         if (dot(normalize(_ViewPos - vLightViewPos), spotlightDir_View) < cos(angle))
-            return float3(0.f, 0.f, 0.f);
+            return light;
         
         // diffuse
         float3 vLightDir = normalize(-vLightViewPos + _ViewPos);
@@ -144,17 +147,22 @@ float3 CalculateLight3D(float3 _ObjectColor, int _LightIdx, float3 _ViewNormal, 
     
     // diffuse + ambient + specular
     
+
+    
     // diffuse
-    float3 diffuse = _ObjectColor * LightInfo.light.Color.rgb * LightPow * Ratio;
+    float3 diffuse = LightInfo.light.Color.rgb * LightPow * Ratio;
     
     // ambient
-    float3 ambient = _ObjectColor * LightInfo.light.Ambient.rgb * Ratio;
+    float3 ambient = LightInfo.light.Ambient.rgb * Ratio;
     
     // specular
     float3 specular = LightInfo.light.Color.rgb * LightInfo.light.SpecularCoef * SpecularPow * Ratio;
     
-    return diffuse + ambient + specular;
+    light.Diffuse = diffuse;
+    light.Ambient = ambient;
+    light.Specular = specular; // SpecularCoef값에 임시로 specular값을 넣어둠
     
+    return light;
 }
 
 
