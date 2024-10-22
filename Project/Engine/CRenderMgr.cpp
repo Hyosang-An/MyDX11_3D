@@ -9,6 +9,7 @@
 #include "CTimeMgr.h"
 #include "CAssetMgr.h"
 #include "CKeyMgr.h"
+#include "CDevice.h"
 
 #include "CGameObject.h"
 #include "CTransform.h"
@@ -20,6 +21,8 @@
 #include "CLight2D.h"
 #include "CLight3D.h"
 #include "CStructuredBuffer.h"
+
+#include "CMRT.h"
 
 
 
@@ -39,6 +42,8 @@ CRenderMgr::~CRenderMgr()
 
 	if (nullptr != m_Light3DBuffer)
 		delete m_Light3DBuffer;
+
+	Delete_Array(m_arrMRT);
 }
 
 
@@ -54,6 +59,9 @@ void CRenderMgr::Init()
 	m_DebugObject->AddComponent(new CTransform);
 	m_DebugObject->AddComponent(new CMeshRender);
 	m_DebugObject->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"));
+
+	// MRT 생성
+	CreateMRT();
 }
 
 
@@ -80,12 +88,15 @@ void CRenderMgr::Tick()
 	// Level 이 Play 상태인 경우, Level 내에 있는 카메라 시점으로 렌더링하기
 	if (PLAY == pCurLevel->GetState())
 	{
-		for (size_t i = 0; i < m_vecCam.size(); ++i)
+		if (nullptr != m_vecCam[0])
+			Render(m_vecCam[0]);
+
+		for (size_t i = 1; i < m_vecCam.size(); ++i)
 		{
 			if (nullptr == m_vecCam[i])
 				continue;
 
-			m_vecCam[i]->Render();
+			Render_Sub(m_vecCam[1]);
 		}
 	}
 
@@ -94,7 +105,7 @@ void CRenderMgr::Tick()
 	{
 		if (nullptr != m_EditorCamera)
 		{
-			m_EditorCamera->Render();
+			Render(m_EditorCamera);
 		}
 	}
 
@@ -119,17 +130,13 @@ void CRenderMgr::Tick()
 
 void CRenderMgr::RenderStart()
 {
-	// 렌더타겟 지정
-	Ptr<CTexture> pRTTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"RenderTargetTex");
-	Ptr<CTexture> pDSTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"DepthStencilTex");
-	CONTEXT->OMSetRenderTargets(1, pRTTex->GetRTV().GetAddressOf(), pDSTex->GetDSV().Get());
+	// 렌더타겟 클리어 및 지정
+	//m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->ClearRT();
+	//m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->ClearDS(); // 어차피 Render들어가면서 ClearMRT()를 해주기 때문에 필요없다.
+	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
 
-	// TargetClear
-	float color[4] = { 0.f, 0.f, 0.f, 1.f };
-	CONTEXT->ClearRenderTargetView(pRTTex->GetRTV().Get(), color);
-	CONTEXT->ClearDepthStencilView(pDSTex->GetDSV().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
-
-	g_GlobalData.g_Resolution = Vec2((float)pRTTex->Width(), (float)pRTTex->Height());
+	// GlobalData 설정
+	g_GlobalData.g_Resolution = CDevice::GetInst()->GetResolution();
 	g_GlobalData.g_Light2DCount = (int)m_vecLight2D.size();
 	g_GlobalData.g_Light3DCount = (int)m_vecLight3D.size();
 
@@ -186,6 +193,62 @@ void CRenderMgr::RenderStart()
 	static CConstBuffer* pGlobalCB = CDevice::GetInst()->GetConstBuffer(CB_TYPE::GLOBAL);
 	pGlobalCB->SetData(&g_GlobalData);
 	pGlobalCB->Binding();
+}
+
+void CRenderMgr::Render(CCamera* _Cam)
+{
+	// 오브젝트 분류
+	_Cam->SortGameObject();
+
+	// 카메라 변환행렬 설정
+	// 물체가 렌더링될 때 사용할 View, Proj 행렬
+	g_Trans.matView = _Cam->GetViewMat();
+	g_Trans.matProj = _Cam->GetProjMat();
+
+	// MRT 모두 클리어
+	ClearMRT();
+
+	// ==================
+	// DEFERRED RENDERING
+	// ==================
+	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
+	_Cam->render_deferred();
+
+	// ===============
+	// LIGHT RENDERING
+	// ===============
+	m_arrMRT[(UINT)MRT_TYPE::LIGHT]->OMSet();
+
+	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
+	{
+		//m_vecLight3D[i]->Render();
+	}
+
+	// ===================================
+	// MERGE ALBEDO + LIGHTS ==> SwapChain
+	// ===================================
+	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
+
+
+
+	// =================
+	// FORWARD RENDERING
+	// =================
+	// 분류된 물체들 렌더링
+	_Cam->render_opaque();
+	_Cam->render_masked();
+	_Cam->render_effect();
+	_Cam->render_transparent();
+	_Cam->render_particle();
+	_Cam->render_postprocess();
+	_Cam->render_ui();
+
+	// 정리
+	_Cam->clear();
+}
+
+void CRenderMgr::Render_Sub(CCamera* _Cam)
+{
 }
 
 void CRenderMgr::Clear()
@@ -247,6 +310,126 @@ void CRenderMgr::RenderDebugShape()
 			++iter;
 		}
 	}
+}
+
+void CRenderMgr::CreateMRT()
+{
+	CMRT* pMRT = nullptr;
+
+	// =============
+	// SwapChain MRT
+	// =============
+	{
+		Ptr<CTexture> arrRT[8] = { CAssetMgr::GetInst()->FindAsset<CTexture>(L"RenderTargetTex"), };
+		Ptr<CTexture> pDSTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"DepthStencilTex");
+		Vec4		  arrClearColor[8] = { Vec4(0.f, 0.f, 0.f, 0.f), };
+
+		m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN] = new CMRT;
+		m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->SetName(L"SwapChain");
+		m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->Create(1, arrRT, pDSTex);
+		m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->SetClearColor(arrClearColor, false);
+	}
+
+	// =============
+	// Effect MRT
+	// =============
+	{
+		Ptr<CTexture> arrRT[8] = { CAssetMgr::GetInst()->FindAsset<CTexture>(L"EffectTargetTex"), };
+		Ptr<CTexture> pDSTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"EffectDepthStencilTex");
+		Vec4		  arrClearColor[8] = { Vec4(0.f, 0.f, 0.f, 0.f), };
+
+		m_arrMRT[(UINT)MRT_TYPE::EFFECT] = new CMRT;
+		m_arrMRT[(UINT)MRT_TYPE::EFFECT]->SetName(L"Effect");
+		m_arrMRT[(UINT)MRT_TYPE::EFFECT]->Create(1, arrRT, pDSTex);
+		m_arrMRT[(UINT)MRT_TYPE::EFFECT]->SetClearColor(arrClearColor, false);
+	}
+
+	// ===============
+	// EffectBlur MRT
+	// ===============
+	{
+		Ptr<CTexture> arrRT[8] = { CAssetMgr::GetInst()->FindAsset<CTexture>(L"EffectBlurTargetTex"), };
+		Ptr<CTexture> pDSTex = nullptr;
+		Vec4		  arrClearColor[8] = { Vec4(0.f, 0.f, 0.f, 0.f), };
+
+		m_arrMRT[(UINT)MRT_TYPE::EFFECT_BLUR] = new CMRT;
+		m_arrMRT[(UINT)MRT_TYPE::EFFECT_BLUR]->SetName(L"EffectBlur");
+		m_arrMRT[(UINT)MRT_TYPE::EFFECT_BLUR]->Create(1, arrRT, nullptr);
+		m_arrMRT[(UINT)MRT_TYPE::EFFECT_BLUR]->SetClearColor(arrClearColor, false);
+	}
+
+	// ========
+	// Deferred
+	// ========
+	{
+		Vec2 vResolution = CDevice::GetInst()->GetResolution();
+
+		Ptr<CTexture> arrRT[8] =
+		{
+			CAssetMgr::GetInst()->CreateTexture(L"AlbedoTargetTex"
+											, (UINT)vResolution.x, (UINT)vResolution.y
+											, DXGI_FORMAT_R8G8B8A8_UNORM
+											, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE),
+			CAssetMgr::GetInst()->CreateTexture(L"NormalTargetTex"
+											, (UINT)vResolution.x, (UINT)vResolution.y
+											, DXGI_FORMAT_R32G32B32A32_FLOAT
+											, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE),
+			CAssetMgr::GetInst()->CreateTexture(L"PositionTargetTex"
+											, (UINT)vResolution.x, (UINT)vResolution.y
+											, DXGI_FORMAT_R32G32B32A32_FLOAT
+											, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE),
+			CAssetMgr::GetInst()->CreateTexture(L"EmissiveTargetTex"
+											, (UINT)vResolution.x, (UINT)vResolution.y
+											, DXGI_FORMAT_R32G32B32A32_FLOAT
+											, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE),
+			CAssetMgr::GetInst()->CreateTexture(L"DataTargetTex"
+											, (UINT)vResolution.x, (UINT)vResolution.y
+											, DXGI_FORMAT_R32G32B32A32_FLOAT
+											, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE),
+		};
+		Ptr<CTexture> pDSTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"DepthStencilTex");
+		Vec4		  arrClearColor[8] = { Vec4(0.f, 0.f, 0.f, 0.f), };
+
+		m_arrMRT[(UINT)MRT_TYPE::DEFERRED] = new CMRT;
+		m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->SetName(L"Deferred");
+		m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->Create(5, arrRT, pDSTex);
+		m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->SetClearColor(arrClearColor, false);
+	}
+
+	// =====
+	// LIGHT
+	// =====
+	{
+		Vec2 vResolution = CDevice::GetInst()->GetResolution();
+
+		Ptr<CTexture> arrRT[8] =
+		{
+			CAssetMgr::GetInst()->CreateTexture(L"DiffuseTargetTex"
+											, (UINT)vResolution.x, (UINT)vResolution.y
+											, DXGI_FORMAT_R32G32B32A32_FLOAT
+											, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE),
+			CAssetMgr::GetInst()->CreateTexture(L"SpecularTargetTex"
+											, (UINT)vResolution.x, (UINT)vResolution.y
+											, DXGI_FORMAT_R32G32B32A32_FLOAT
+											, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE),
+		};
+		Ptr<CTexture> pDSTex = nullptr;
+		Vec4		  arrClearColor[8] = { Vec4(0.f, 0.f, 0.f, 0.f), };
+
+		m_arrMRT[(UINT)MRT_TYPE::LIGHT] = new CMRT;
+		m_arrMRT[(UINT)MRT_TYPE::LIGHT]->SetName(L"Light");
+		m_arrMRT[(UINT)MRT_TYPE::LIGHT]->Create(2, arrRT, pDSTex);
+		m_arrMRT[(UINT)MRT_TYPE::LIGHT]->SetClearColor(arrClearColor, false);
+	}
+}
+
+void CRenderMgr::ClearMRT()
+{
+	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->Clear();
+
+	// 어차피 다른 MRT는 같은 DepthStencilTex를 사용하므로, 한번만 지워주면 된다.
+	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->ClearRT();
+	m_arrMRT[(UINT)MRT_TYPE::LIGHT]->ClearRT();
 }
 
 void CRenderMgr::RegisterCamera(CCamera* _cam, int _camPriority)

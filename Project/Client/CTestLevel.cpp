@@ -29,7 +29,9 @@ void CTestLevel::CreateTestLevel()
 	//pSound->Play(0, 1.f, false);
 // 
 	// Material
-	Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3DMtrl");
+	Ptr<CMaterial> pStd3DMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3DMtrl");
+	Ptr<CMaterial> pStd3D_DeferredMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl");
+
 
 	// Level »ý¼º
 	CLevel* TestLevel = new CLevel;
@@ -165,7 +167,7 @@ void CTestLevel::CreateTestLevel()
 	pPlayer->Transform()->SetRelativeRotation(XM_PI / 2.f, 0.f, 0.f);
 
 	pPlayer->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	pPlayer->MeshRender()->SetMaterial(pMtrl);
+	pPlayer->MeshRender()->SetMaterial(pStd3D_DeferredMtrl);
 
 	Ptr<CTexture> pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\LandScapeTexture\\gl1_ground_II_albedo.TGA");
 	Ptr<CTexture> pNTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");

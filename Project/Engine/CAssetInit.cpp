@@ -532,6 +532,25 @@ void CAssetMgr::CreateEngineTexture()
 
 
 
+	Ptr<CTexture> pEffectTarget = CreateTexture(
+		L"EffectTargetTex"
+		, (UINT)(Resolution.x), (UINT)(Resolution.y)
+		, DXGI_FORMAT_R32G32B32A32_FLOAT, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
+
+	Ptr<CTexture> pEffectDepth = CreateTexture(
+		L"EffectDepthStencilTex"
+		, (UINT)(Resolution.x), (UINT)(Resolution.y)
+		, DXGI_FORMAT_D24_UNORM_S8_UINT, D3D11_BIND_DEPTH_STENCIL);
+
+	Ptr<CTexture> pEffectBlurTarget = CreateTexture(
+		L"EffectBlurTargetTex"
+		, (UINT)(Resolution.x), (UINT)(Resolution.y)
+		, DXGI_FORMAT_R32G32B32A32_FLOAT, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
+
+
+
+
+
 	// Noise Texture
 	Load<CTexture>(L"texture\\noise\\noise_01.png", L"texture\\noise\\noise_01.png");
 	Load<CTexture>(L"texture\\noise\\noise_02.png", L"texture\\noise\\noise_02.png");
@@ -733,6 +752,19 @@ void CAssetMgr::CreateEngineGraphicShader()
 	AddAsset(L"SkyBoxShader", pShader);
 
 
+	// Std3D_DeferredShader
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\std3d_deferred.fx", "VS_Std3D_Deferred");
+	pShader->CreatePixelShader(L"shader\\std3d_deferred.fx", "PS_Std3D_Deferred");
+	pShader->SetRSType(RS_TYPE::CULL_BACK);
+	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetBSType(BS_TYPE::DEFAULT);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DEFERRED);
+	pShader->AddTexParam(TEX_0, "Albedo Texture");
+	pShader->AddTexParam(TEX_1, "Normal Texture");
+	AddAsset(L"Std3D_DeferredShader", pShader);
+
+
 	// GrayFilterShader
 	pShader = new CGraphicShader;
 	pShader->CreateVertexShader(L"shader\\postprocess_0.fx", "VS_Screen");
@@ -802,6 +834,26 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->SetBSType(BS_TYPE::DEFAULT);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
 	AddAsset(L"BloomShader", pShader);
+
+	// BlurShader
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\postprocess_0.fx", "VS_Blur");
+	pShader->CreatePixelShader(L"shader\\postprocess_0.fx", "PS_Blur");
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetBSType(BS_TYPE::ALPHABLEND);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
+	AddAsset(L"BlurShader", pShader);
+
+	// EffectMerge
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\postprocess_0.fx", "VS_EffectMerge");
+	pShader->CreatePixelShader(L"shader\\postprocess_0.fx", "PS_EffectMerge");
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetBSType(BS_TYPE::ALPHABLEND);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
+	AddAsset(L"EffectMergeShader", pShader);
 }
 
 void CAssetMgr::CreateEngineComputeShader()
@@ -851,6 +903,11 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"SkyBoxShader"));
 	AddAsset(L"SkyBoxMtrl", pMtrl);
+
+	// Std3D_DeferredMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"Std3D_DeferredShader"));
+	AddAsset(L"Std3D_DeferredMtrl", pMtrl);
 
 	// GrayFilterMtrl
 	pMtrl = new CMaterial(true);
@@ -903,6 +960,17 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl->SetTexParam(TEX_0, FindAsset<CTexture>(L"PostProcessRTTex_0"));
 	pMtrl->SetTexParam(TEX_1, FindAsset<CTexture>(L"PostProcessRTTex_1"));
 	AddAsset(L"BloomMtrl", pMtrl);
+
+
+	// BlurMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"BlurShader"));
+	AddAsset(L"BlurMtrl", pMtrl);
+
+	// EffectMergeMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"EffectMergeShader"));
+	AddAsset(L"EffectMergeMtrl", pMtrl);
 }
 
 void CAssetMgr::FindAssetName(const wstring& _FolderPath, const wstring& _Filter)

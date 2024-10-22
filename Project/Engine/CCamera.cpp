@@ -4,6 +4,7 @@
 #include "CDevice.h"
 
 #include "CRenderMgr.h"
+#include "CAssetMgr.h"
 
 #include "CLevelMgr.h"
 #include "CLevel.h"
@@ -14,6 +15,8 @@
 #include "CKeyMgr.h"
 #include "CTransform.h"
 #include "CRenderComponent.h"
+
+#include "CMRT.h"
 
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)
@@ -136,74 +139,140 @@ void CCamera::SortGameObject()
 
 			switch (Domain)
 			{
-				case DOMAIN_OPAQUE:
-					m_vecOpaque.push_back(vecObjects[j]);
-					break;
-				case DOMAIN_MASKED:
-					m_vecMasked.push_back(vecObjects[j]);
-					break;
-				case DOMAIN_TRANSPARENT:
-					m_vecTransparent.push_back(vecObjects[j]);
-					break;
-				case DOMAIN_PARTICLE:
-					m_vecParticles.push_back(vecObjects[j]);
-					break;
-				case DOMAIN_POSTPROCESS:
-					m_vecPostProcess.push_back(vecObjects[j]);
-					break;
-				case DOMAIN_UI:
-					m_vecUI.push_back(vecObjects[j]);
-					break;
+			case DOMAIN_DEFERRED:
+				m_vecDeferred.push_back(vecObjects[j]);
+				break;
+
+			case DOMAIN_OPAQUE:
+				m_vecOpaque.push_back(vecObjects[j]);
+				break;
+			case DOMAIN_MASKED:
+				m_vecMasked.push_back(vecObjects[j]);
+				break;
+			case DOMAIN_TRANSPARENT:
+				m_vecTransparent.push_back(vecObjects[j]);
+				break;
+			case DOMAIN_PARTICLE:
+				m_vecParticles.push_back(vecObjects[j]);
+				break;
+			case DOMAIN_EFFECT:
+				m_vecEffect.push_back(vecObjects[j]);
+				break;
+			case DOMAIN_POSTPROCESS:
+				m_vecPostProcess.push_back(vecObjects[j]);
+				break;
+			case DOMAIN_UI:
+				m_vecUI.push_back(vecObjects[j]);
+				break;
 			}
 		}
 	}
 }
 
-void CCamera::Render()
+void CCamera::render_deferred()
 {
-	// 오브젝트 분류
-	SortGameObject();
+	// Deferred
+	for (size_t i = 0; i < m_vecOpaque.size(); ++i)
+	{
+		m_vecDeferred[i]->Render();
+	}
+}
 
-	// 물체가 렌더링될 때 사용할 View, Proj 행렬
-	g_Trans.matView = m_matView;
-	g_Trans.matProj = m_matProj;
-
+void CCamera::render_opaque()
+{
 	// Opaque
 	for (size_t i = 0; i < m_vecOpaque.size(); ++i)
 	{
 		m_vecOpaque[i]->Render();
 	}
+}
 
+void CCamera::render_masked()
+{
 	// Masked
 	for (size_t i = 0; i < m_vecMasked.size(); ++i)
 	{
 		m_vecMasked[i]->Render();
 	}
+}
 
+
+void CCamera::render_transparent()
+{
 	// Transparent
 	for (size_t i = 0; i < m_vecTransparent.size(); ++i)
 	{
 		m_vecTransparent[i]->Render();
 	}
+}
 
+void CCamera::render_particle()
+{
 	// Particles
 	for (size_t i = 0; i < m_vecParticles.size(); ++i)
 	{
 		m_vecParticles[i]->Render();
 	}
+}
 
+void CCamera::render_effect()
+{
+	// EffectMRT 로 변경
+	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT)->Clear();
+	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT)->OMSet();
+
+	// Effect
+	for (size_t i = 0; i < m_vecEffect.size(); ++i)
+	{
+		m_vecEffect[i]->Render();
+	}
+
+	// EffectBlurMRT 로 변경
+	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT_BLUR)->ClearRT();
+	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT_BLUR)->OMSet();
+
+	Ptr<CMaterial> pBlurMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"BlurMtrl");
+	Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
+
+	pBlurMtrl->SetTexParam(TEX_0, CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT)->GetRT(0));
+	pBlurMtrl->Binding();
+	pRectMesh->Render_Particle(2);
+
+	// 원래 렌더타겟(SwapChainMRT) 로 변경	
+	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN)->OMSet();
+	Ptr<CMaterial> pEffectMergeMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"EffectMergeMtrl");
+
+	pEffectMergeMtrl->SetTexParam(TEX_0, CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT)->GetRT(0));
+	pEffectMergeMtrl->SetTexParam(TEX_1, CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT_BLUR)->GetRT(0));
+	pEffectMergeMtrl->Binding();
+	pRectMesh->Render();
+}
+
+void CCamera::render_postprocess()
+{
 	// PostProcess 
 	for (size_t i = 0; i < m_vecPostProcess.size(); ++i)
 	{
-		
-
 		CRenderMgr::GetInst()->PostProcessCopy((int)i);
 		m_vecPostProcess[i]->Render();
 	}
+}
 
+void CCamera::render_ui()
+{
+	// UI
+	for (size_t i = 0; i < m_vecUI.size(); ++i)
+	{
+		m_vecUI[i]->Render();
+	}
+}
+
+void CCamera::clear()
+{
 	m_vecOpaque.clear();
 	m_vecMasked.clear();
 	m_vecTransparent.clear();
+	m_vecEffect.clear();
 	m_vecParticles.clear();
 	m_vecPostProcess.clear();
 	m_vecUI.clear();

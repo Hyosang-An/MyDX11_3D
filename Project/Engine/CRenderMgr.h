@@ -5,6 +5,7 @@ class CGameObject;
 class CLight2D;
 class CLight3D;
 class CStructuredBuffer;
+class CMRT;
 
 class CRenderMgr :
 	public CSingleton<CRenderMgr>
@@ -32,6 +33,9 @@ private:
 	vector<Ptr<CTexture>>   m_vecPostProcessRTTex;
 	//Ptr<CTexture>			m_PostProcessDSTex;
 
+	// MRT
+	CMRT* m_arrMRT[(UINT)MRT_TYPE::END] = {};
+
 public:
 	void RegisterCamera(CCamera* _cam, int _camPriority);
 	void RegisterEditorCamera(CCamera* _Cam) { m_EditorCamera = _Cam; }
@@ -43,12 +47,19 @@ public:
 
 	CCamera* GetPOVCam();
 
+	CMRT* GetMRT(MRT_TYPE _Type) { return m_arrMRT[(UINT)_Type]; }
+
 private:
 	void SetPostProcessTex();
 	void RenderStart();
+	void Render(CCamera* _Cam);
+	void Render_Sub(CCamera* _Cam);
 	void Clear();
 
 	void RenderDebugShape();
+
+	void CreateMRT();
+	void ClearMRT();
 
 public:
 	void Init();

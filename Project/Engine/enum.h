@@ -143,10 +143,15 @@ enum TEX_PARAM
 
 enum SHADER_DOMAIN
 {
+	DOMAIN_DEFERRED,	// Deferred 
+	DOMAIN_LIGHT,		// Light
+	DOMAIN_DECAL,		// Decal
+
 	DOMAIN_OPAQUE,		// 불투명
 	DOMAIN_MASKED,		// 투명, 불투명
 	DOMAIN_TRANSPARENT, // 반투명
 	DOMAIN_PARTICLE,	// 파티클
+	DOMAIN_EFFECT,		// 2D 이펙트
 	DOMAIN_POSTPROCESS,	// 후처리
 	DOMAIN_UI,			// UI
 
@@ -212,6 +217,19 @@ enum class PARTICLE_MODULE
 	DRAG,
 	NOISE_FORCE,
 	RENDER,
+
+	END,
+};
+
+enum class MRT_TYPE
+{
+	SWAPCHAIN,
+	EFFECT,
+	EFFECT_BLUR,
+
+	DEFERRED,	// 5개
+	LIGHT,		// 2개
+	SHADOWMAP,  // 1개
 
 	END,
 };

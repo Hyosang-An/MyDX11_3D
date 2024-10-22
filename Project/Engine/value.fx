@@ -94,6 +94,7 @@ cbuffer GLOBAL_DATA : register(b3)
 
 SamplerState g_sam_0 : register(s0); // 이방성 필터 샘플러
 SamplerState g_sam_1 : register(s1); // 포인트 필터 샘플러
+SamplerState g_sam_2 : register(s2); // 선형 필터 샘플러
 
 
 Texture2D g_tex_0 : register(t0);

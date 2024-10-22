@@ -166,6 +166,9 @@
     <ClInclude Include="CSkyBox.h">
       <Filter>08. Component\RenderComponent\05. SkyBox</Filter>
     </ClInclude>
+    <ClInclude Include="CMRT.h">
+      <Filter>04. Manager\06. RenderMgr\MRT</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -308,6 +311,9 @@
     </ClCompile>
     <ClCompile Include="CSkyBox.cpp">
       <Filter>08. Component\RenderComponent\05. SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="CMRT.cpp">
+      <Filter>04. Manager\06. RenderMgr\MRT</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -485,6 +491,9 @@
     <Filter Include="08. Component\09. Light3D">
       <UniqueIdentifier>{1ffe2040-7244-458f-a645-cfbec85582b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Manager\06. RenderMgr\MRT">
+      <UniqueIdentifier>{dad4ee6b-24cf-45c4-b5f7-4aca634c76ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -529,6 +538,9 @@
       <Filter>HLSL\02. Render\3D</Filter>
     </FxCompile>
     <FxCompile Include="skybox.fx">
+      <Filter>HLSL\02. Render\3D</Filter>
+    </FxCompile>
+    <FxCompile Include="std3d_deferred.fx">
       <Filter>HLSL\02. Render\3D</Filter>
     </FxCompile>
   </ItemGroup>
