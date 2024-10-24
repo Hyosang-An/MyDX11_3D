@@ -115,6 +115,87 @@ void DrawDebugCircle(Vec3 _Pos, float _Radius, Vec4 _Color, float _Life, bool _D
 	CRenderMgr::GetInst()->AddDebugShapeInfo(Info);
 }
 
+void DrawDebugLine(Vec3 _Start, Vec3 _End, Vec4 _Color, float _Life, bool _DepthTest)
+{
+	tDebugShapeInfo Info = {};
+
+	Info.Shape = DEBUG_SHAPE::LINE;
+	Info.vPos = _Start;
+	Info.vScale = _End;
+	Info.LifeTime = _Life;
+	Info.vColor = _Color;
+	Info.DepthTest = _DepthTest;
+
+	CRenderMgr::GetInst()->AddDebugShapeInfo(Info);
+}
+
+void DrawDebugCube(Vec3 _Pos, Vec3 _Scale, Vec3 _Rot, Vec4 _Color, float _Life, bool _DepthTest)
+{
+	tDebugShapeInfo Info = {};
+
+	Info.Shape = DEBUG_SHAPE::CUBE;
+	Info.vPos = _Pos;
+	Info.vScale = _Scale;
+	Info.vRot = _Rot;
+	Info.LifeTime = _Life;
+
+	Info.matWorld = XMMatrixScaling(_Scale.x, _Scale.y, _Scale.z)
+		* XMMatrixRotationX(_Rot.x)
+		* XMMatrixRotationY(_Rot.y)
+		* XMMatrixRotationZ(_Rot.z)
+		* XMMatrixTranslation(_Pos.x, _Pos.y, _Pos.z);
+
+	Info.vColor = _Color;
+	Info.DepthTest = _DepthTest;
+
+	CRenderMgr::GetInst()->AddDebugShapeInfo(Info);
+}
+
+void DrawDebugCube(const Matrix& _matWorld, Vec4 _Color, float _Life, bool _DepthTest)
+{
+	tDebugShapeInfo Info = {};
+
+	Info.Shape = DEBUG_SHAPE::CUBE;
+	Info.matWorld = _matWorld;
+	Info.vColor = _Color;
+	Info.DepthTest = _DepthTest;
+	Info.LifeTime = _Life;
+
+	CRenderMgr::GetInst()->AddDebugShapeInfo(Info);
+}
+
+void DrawDebugSphere(Vec3 _Pos, float _Radius, Vec4 _Color, float _Life, bool _DepthTest)
+{
+	tDebugShapeInfo Info = {};
+
+	Info.Shape = DEBUG_SHAPE::SPHERE;
+	Info.vPos = _Pos;
+	Info.vScale = Vec3(_Radius * 2.f, _Radius * 2.f, _Radius * 2.f);
+	Info.vRot = Vec3(0.f, 0.f, 0.f);
+	Info.LifeTime = _Life;
+
+	Info.matWorld = XMMatrixScaling(Info.vScale.x, Info.vScale.y, Info.vScale.z)
+		* XMMatrixTranslation(_Pos.x, _Pos.y, _Pos.z);
+
+	Info.vColor = _Color;
+	Info.DepthTest = _DepthTest;
+
+	CRenderMgr::GetInst()->AddDebugShapeInfo(Info);
+}
+
+void DrawDebugSphere(const Matrix& _matWorld, Vec4 _Color, float _Life, bool _DepthTest)
+{
+	tDebugShapeInfo Info = {};
+
+	Info.Shape = DEBUG_SHAPE::SPHERE;
+	Info.matWorld = _matWorld;
+	Info.vColor = _Color;
+	Info.DepthTest = _DepthTest;
+	Info.LifeTime = _Life;
+
+	CRenderMgr::GetInst()->AddDebugShapeInfo(Info);
+}
+
 void SaveWString(const wstring& _String, FILE* _File)
 {
 	size_t len = _String.length();

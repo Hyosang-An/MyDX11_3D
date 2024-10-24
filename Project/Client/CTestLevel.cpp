@@ -89,22 +89,22 @@ void CTestLevel::CreateTestLevel()
 
 	TestLevel->AddObject(0, pObject);
 
-	//// 3D Point Light 1
-	//pObject = new CGameObject;
-	//pObject->SetName(L"Point Light 1");
-	//pObject->AddComponent(new CTransform);
-	//pObject->AddComponent(new CLight3D);
+	// 3D Point Light 1
+	pObject = new CGameObject;
+	pObject->SetName(L"Point Light 1");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CLight3D);
 
-	//pObject->Transform()->SetRelativePos(0.f, 0.f, 0.f);
-	//pObject->Transform()->SetRelativeRotation(XM_PI / 4.f, XM_PI / 4.f, 0.f);
+	pObject->Transform()->SetRelativePos(0.f, 0.f, 500.f);
+	pObject->Transform()->SetRelativeRotation(XM_PI / 4.f, XM_PI / 4.f, 0.f);
 
-	//pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
-	//pObject->Light3D()->SetLightColor(Vec3(0.9f, 0.9f, 0.9f));
-	//pObject->Light3D()->SetLightAmbient(Vec3(0.1f, 0.1f, 0.1f));
-	//pObject->Light3D()->SetSpecularCoefficient(0.3f);
-	//pObject->Light3D()->SetRadius(700.f);
+	pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	pObject->Light3D()->SetLightColor(Vec3(0.9f, 0.9f, 0.9f));
+	pObject->Light3D()->SetLightAmbient(Vec3(0.1f, 0.1f, 0.1f));
+	pObject->Light3D()->SetSpecularCoefficient(0.3f);
+	pObject->Light3D()->SetRadius(700.f);
 
-	//TestLevel->AddObject(0, pObject);
+	TestLevel->AddObject(0, pObject);
 
 
 	//// 3D Point Light 2
@@ -214,7 +214,8 @@ void CTestLevel::CreateTestLevel()
 	pDecal->AddComponent(new CDecal);
 	TestLevel->AddObject(3, pDecal);
 
-
+	pDecal->Transform()->SetRelativePos(0.f, 0.f, 1000.f);
+	pDecal->Transform()->SetRelativeScale(100.f, 100.f, 100.f);
 
 
 	ChangeLevel(TestLevel, LEVEL_STATE::STOP);

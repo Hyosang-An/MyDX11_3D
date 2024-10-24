@@ -82,7 +82,9 @@ void CAssetMgr::CreateEngineMesh()
 	Ptr<CMesh> pMesh = nullptr;
 	Vtx v;
 
+	// ============
 	// PointMesh
+	// ============
 	pMesh = new CMesh;
 	v.vPos = Vec3(0.f, 0.f, 0.f);
 	v.vColor = Vec4(0.f, 0.f, 0.f, 1.f);
@@ -93,7 +95,9 @@ void CAssetMgr::CreateEngineMesh()
 	AddAsset(L"PointMesh", pMesh);
 
 
+	// ============
 	// RectMesh 생성	
+	// ============
 	// 0 -- 1
 	// | \  |
 	// 3 -- 2
@@ -132,16 +136,19 @@ void CAssetMgr::CreateEngineMesh()
 	pMesh->Create(arrVtx, 4, arrIdx, 6);
 	AddAsset(L"RectMesh", pMesh);
 
+	// ============
 	// RectMesh_Debug
+	// ============
 	arrIdx[0] = 0; arrIdx[1] = 1; arrIdx[2] = 2; arrIdx[3] = 3; arrIdx[4] = 0;
 	pMesh = new CMesh;
 	pMesh->Create(arrVtx, 4, arrIdx, 5);
 	AddAsset(L"RectMesh_Debug", pMesh);
 
+	// ============
 	// CircleMesh 
+	// ============
 	vector<Vtx> vecVtx;
 	vector<UINT> vecIdx;
-
 
 	int Slice = 40;
 	float fTheta = XM_2PI / Slice;
@@ -179,7 +186,9 @@ void CAssetMgr::CreateEngineMesh()
 
 	vecIdx.clear();
 
+	// ============
 	// CircleMesh_Debug
+	// ============
 	for (size_t i = 1; i < vecVtx.size(); ++i)
 	{
 		vecIdx.push_back((UINT)i);
@@ -191,7 +200,9 @@ void CAssetMgr::CreateEngineMesh()
 
 	vecIdx.clear();
 
+	// ============
 	// CubeMesh
+	// ============
 	// 24개의 정점이 필요
 	// 평면 하나당 정점 4개 x 6면 = 24개
 	Vtx arrCube[24] = {};
@@ -400,8 +411,14 @@ void CAssetMgr::CreateEngineMesh()
 
 	vecIdx.clear();
 
-	// CubeMesh_Debug
 
+	// ============
+	// CubeMesh_Debug
+	// ============
+	vecIdx.push_back(0); vecIdx.push_back(1); vecIdx.push_back(2); vecIdx.push_back(3); vecIdx.push_back(4);
+	vecIdx.push_back(7); vecIdx.push_back(6); vecIdx.push_back(5); vecIdx.push_back(4); vecIdx.push_back(3);
+	vecIdx.push_back(0); vecIdx.push_back(7); vecIdx.push_back(6); vecIdx.push_back(1); vecIdx.push_back(2);
+	vecIdx.push_back(5);
 
 	pMesh = new CMesh();
 	pMesh->Create(arrCube, 24, vecIdx.data(), (UINT)vecIdx.size());
@@ -701,18 +718,35 @@ void CAssetMgr::CreateEngineGraphicShader()
 	// DebugShapeShader
 	pShader = new CGraphicShader;
 	pShader->CreateVertexShader(L"shader\\debug.fx", "VS_DebugShape");
-	pShader->CreateGeometryShader(L"shader\\debug.fx", "GS_DebugShape");
+	//pShader->CreateGeometryShader(L"shader\\debug.fx", "GS_DebugShape");
 	pShader->CreatePixelShader(L"shader\\debug.fx", "PS_DebugShape");
 
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	pShader->SetRSType(RS_TYPE::CULL_NONE);
-	pShader->SetDSType(DS_TYPE::LESS);
-	pShader->SetBSType(BS_TYPE::DEFAULT);
+	pShader->SetDSType(DS_TYPE::NO_WRITE);
+	pShader->SetBSType(BS_TYPE::ALPHABLEND);
 
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DEBUG);
 
 	AddAsset(L"DebugShapeShader", pShader);
+
+
+	// DebugLineShader
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\debug.fx", "VS_DebugLine");
+	pShader->CreateGeometryShader(L"shader\\debug.fx", "GS_DebugLine");
+	pShader->CreatePixelShader(L"shader\\debug.fx", "PS_DebugLine");
+
+	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetBSType(BS_TYPE::ALPHABLEND);
+
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DEBUG);
+
+	AddAsset(L"DebugLineShader", pShader);
 
 
 	// TileMapShader
