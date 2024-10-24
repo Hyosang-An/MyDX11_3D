@@ -169,6 +169,9 @@
     <ClInclude Include="CMRT.h">
       <Filter>04. Manager\06. RenderMgr\MRT</Filter>
     </ClInclude>
+    <ClInclude Include="CDecal.h">
+      <Filter>08. Component\RenderComponent\04. Decal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -314,6 +317,9 @@
     </ClCompile>
     <ClCompile Include="CMRT.cpp">
       <Filter>04. Manager\06. RenderMgr\MRT</Filter>
+    </ClCompile>
+    <ClCompile Include="CDecal.cpp">
+      <Filter>08. Component\RenderComponent\04. Decal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

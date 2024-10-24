@@ -229,7 +229,7 @@ CComponent* CLevelSaveLoad::GetComponent(COMPONENT_TYPE _Type)
 			return  new CLight2D;
 
 		case COMPONENT_TYPE::LIGHT3D:
-			break;
+			return new CLight3D;
 
 		case COMPONENT_TYPE::FLIPBOOK_COMPONENT:
 			return new CFlipBookComponent;
@@ -254,13 +254,12 @@ CComponent* CLevelSaveLoad::GetComponent(COMPONENT_TYPE _Type)
 
 		case COMPONENT_TYPE::PARTICLE_SYSTEM:
 			return  new CParticleSystem;
-			break;
 
-		case COMPONENT_TYPE::DECAl:
-			break;
+		case COMPONENT_TYPE::DECAL:
+			return new CDecal;
 
 		case COMPONENT_TYPE::SKYBOX:
-			break;
+			return new CSkyBox;
 
 		case COMPONENT_TYPE::LANDSCAPE:
 			break;

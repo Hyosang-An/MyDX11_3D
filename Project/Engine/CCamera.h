@@ -33,8 +33,10 @@ private:
     float       m_FOV; // Field Of View (시야 범위, 시야 각)
     float       m_ProjectionScale = 1.f;
 
-    Matrix      m_matView;
-    Matrix      m_matProj;
+	Matrix      m_matView;
+	Matrix      m_matViewInv;
+	Matrix      m_matProj;
+	Matrix      m_matProjInv;
 
     vector<CGameObject*>    m_vecDeferred;      // Deferred
 
@@ -88,7 +90,9 @@ public:
     float GetScale() { return m_ProjectionScale; }
 
     const Matrix& GetViewMat() { return m_matView; }
+    const Matrix& GetViewMatInv() { return m_matViewInv; }
     const Matrix& GetProjMat() { return m_matProj; }
+    const Matrix& GetProjMatInv() { return m_matProjInv; }
 
 private:
     void SortGameObject();

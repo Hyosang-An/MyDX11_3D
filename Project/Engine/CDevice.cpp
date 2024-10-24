@@ -299,6 +299,73 @@ int CDevice::CreateDepthStencilState()
 		return E_FAIL;
 	}
 
+	//// INNER - VolumeMesh 뒷변보다 앞쪽에 있는 부분 체크
+	//Desc.DepthEnable = true;    // 깊이판정을 진행
+	//Desc.DepthFunc = D3D11_COMPARISON_GREATER;           // 깊이 판정 방식
+	//Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;   // 깊이판정을 성공시 깊이 기록여부
+	//Desc.StencilEnable = true;
+
+	//Desc.BackFace.StencilFunc           = D3D11_COMPARISON_ALWAYS;  // 항상 통과    
+	//Desc.BackFace.StencilDepthFailOp    = D3D11_STENCIL_OP_KEEP;    // 깊이가 실패(뒷면보다 더 멀다)
+	//Desc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;    // 스텐실 테스트는 항상 통과기 때문에 발생할 일이 없다.
+	//Desc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_INCR;    // 스텐실 값을 증가시킨다.
+
+
+	//Desc.FrontFace.StencilFunc;
+	//Desc.FrontFace.StencilPassOp;
+	//Desc.FrontFace.StencilDepthFailOp;
+	//Desc.FrontFace.StencilDepthFailOp;
+
+	//if (FAILED(DEVICE->CreateDepthStencilState(&Desc, m_DSState[(UINT)DS_TYPE::NO_TEST_NO_WRITE].GetAddressOf())))
+	//{
+	//    return E_FAIL;
+	//}
+
+
+	//// OUTER - VolumeMesh 앞면보다 뒤에 있는 부분 체크
+	//Desc.DepthEnable = true;    // 깊이판정을 진행
+	//Desc.DepthFunc = D3D11_COMPARISON_LESS;          // 깊이 판정 방식
+	//Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;   // 깊이판정을 성공시 깊이 기록여부
+	//Desc.StencilEnable = true;
+
+	//Desc.FrontFace.StencilFunc          = D3D11_COMPARISON_EQUAL; // 특정값(1) 이랑 동일할 경우 Stencil 통과
+	//Desc.FrontFace.StencilFailOp        = D3D11_STENCIL_OP_KEEP;  // 스텐실 실패 == Inner 체크 성공을 못한 부분들, 아무것도 할 필요가 없다.
+	//Desc.FrontFace.StencilDepthFailOp   = D3D11_STENCIL_OP_DECR;  // 스텐실 성공, 깊이 실패, 뒷면보다는 안쪽에 있었지만 앞면보다도 더 앞쪽에 있었다    
+	//Desc.FrontFace.StencilPassOp        = D3D11_STENCIL_OP_KEEP;  // 스텐실 성공, 깊이 성공, 뒷면보다 안쪽에, 앞면보다 뒷쪽에, 볼륨메쉬 내부영역
+
+	//Desc.BackFace.StencilFunc;
+	//Desc.BackFace.StencilPassOp;
+	//Desc.BackFace.StencilDepthFailOp;
+	//Desc.BackFace.StencilDepthFailOp;  
+
+	//if (FAILED(DEVICE->CreateDepthStencilState(&Desc, m_DSState[(UINT)DS_TYPE::NO_TEST_NO_WRITE].GetAddressOf())))
+	//{
+	//    return E_FAIL;
+	//}
+
+
+	//// VOLUME_CHECK
+	//Desc.DepthEnable    = true;    // 깊이판정을 진행
+	//Desc.DepthFunc      = D3D11_COMPARISON_GREATER;           // 깊이 판정 방식
+	//Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;   // 깊이판정을 성공시 깊이 기록여부
+	//Desc.StencilEnable  = true;
+
+	//Desc.BackFace.StencilFunc           = D3D11_COMPARISON_ALWAYS;  // 항상 통과    
+	//Desc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;    // 스텐실 테스트는 항상 통과기 때문에 발생할 일이 없다.
+	//Desc.BackFace.StencilDepthFailOp    = D3D11_STENCIL_OP_DECR;    // 깊이가 실패(뒷면보다 더 멀다)
+	//Desc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_INCR;    // 스텐실 값을 증가시킨다.
+
+	//Desc.FrontFace.StencilFunc          = D3D11_COMPARISON_ALWAYS; // 특정값(1) 이랑 동일할 경우 Stencil 통과
+	//Desc.FrontFace.StencilFailOp        = D3D11_STENCIL_OP_KEEP;  // 스텐실 실패 == Inner 체크 성공을 못한 부분들, 아무것도 할 필요가 없다.
+	//Desc.FrontFace.StencilDepthFailOp   = D3D11_STENCIL_OP_INCR;  // 스텐실 성공, 깊이 실패, 뒷면보다는 안쪽에 있었지만 앞면보다도 더 앞쪽에 있었다    
+	//Desc.FrontFace.StencilPassOp        = D3D11_STENCIL_OP_DECR;  // 스텐실 성공, 깊이 성공, 뒷면보다 안쪽에, 앞면보다 뒷쪽에, 볼륨메쉬 내부영역
+
+	//if (FAILED(DEVICE->CreateDepthStencilState(&Desc, m_DSState[(UINT)DS_TYPE::NO_TEST_NO_WRITE].GetAddressOf())))
+	//{
+	//    return E_FAIL;
+	//}
+
+
 
 	return S_OK;
 }

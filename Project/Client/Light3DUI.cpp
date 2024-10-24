@@ -65,6 +65,7 @@ void Light3DUI::Update()
 	ImGui::Text("Light Radius");
 	ImGui::SameLine(100);
 	ImGui::DragFloat("##DragRadius", (float*)&info.Radius, 1.f);
+	pLight->SetRadius(info.Radius);
 
 	ImGui::EndDisabled();
 

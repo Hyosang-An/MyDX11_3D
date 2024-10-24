@@ -48,7 +48,7 @@ int CMesh::Create(Vtx* _VtxSysMem, UINT _VtxCount, UINT* _IdxSysMem, UINT _IdxCo
 	m_VBDesc.StructureByteStride = 0;
 
 	D3D11_SUBRESOURCE_DATA tSub = {};
-	tSub.pSysMem = _VtxSysMem;
+	tSub.pSysMem = m_VtxSysMem;
 
 	if (FAILED(DEVICE->CreateBuffer(&m_VBDesc, &tSub, m_VB.GetAddressOf())))
 	{
@@ -67,7 +67,7 @@ int CMesh::Create(Vtx* _VtxSysMem, UINT _VtxCount, UINT* _IdxSysMem, UINT _IdxCo
 	m_IBDesc.MiscFlags = 0;
 	m_IBDesc.StructureByteStride = 0;
 
-	tSub.pSysMem = _IdxSysMem;
+	tSub.pSysMem = m_IdxSysMem;
 
 	if (FAILED(DEVICE->CreateBuffer(&m_IBDesc, &tSub, m_IB.GetAddressOf())))
 	{

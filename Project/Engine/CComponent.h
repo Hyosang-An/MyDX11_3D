@@ -38,6 +38,7 @@ public:
 	class CLight3D* Light3D() { return m_Owner->Light3D(); }
     class CParticleSystem* ParticleSystem() { return m_Owner->ParticleSystem(); }
 	class CSkyBox* SkyBox() { return m_Owner->SkyBox(); }
+	class CDecal* Decal() { return m_Owner->Decal(); }
     
 
 

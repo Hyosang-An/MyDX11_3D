@@ -80,11 +80,15 @@ void CTransform::FinalTick()
 		}
 	}
 
+	// 월드 역행렬 계산
+	m_matWorldInv = XMMatrixInverse(nullptr, m_matWorld);
 }
 
 void CTransform::Binding()
 {
 	g_Trans.matWorld = m_matWorld;
+	g_Trans.matWorldInv = m_matWorldInv;
+
 	g_Trans.matWV = g_Trans.matWorld * g_Trans.matView;
 	g_Trans.matWVP = g_Trans.matWV * g_Trans.matProj;
 

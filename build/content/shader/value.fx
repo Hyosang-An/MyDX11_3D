@@ -12,6 +12,10 @@ cbuffer OBJECT_POS : register(b0)
     row_major matrix matView;
     row_major matrix matProj;
     
+    row_major matrix matWorldInv;
+    row_major matrix matViewInv;
+    row_major matrix matProjInv;
+    
     row_major matrix matWV;
     row_major matrix matWVP;
     

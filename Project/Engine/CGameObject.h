@@ -59,6 +59,7 @@ public:
 	class CLight3D* Light3D() { return (CLight3D*)GetComponent(COMPONENT_TYPE::LIGHT3D); }
     class CParticleSystem* ParticleSystem() { return (CParticleSystem*)GetComponent(COMPONENT_TYPE::PARTICLE_SYSTEM); }
 	class CSkyBox* SkyBox() { return (CSkyBox*)GetComponent(COMPONENT_TYPE::SKYBOX); }
+	class CDecal* Decal() { return (CDecal*)GetComponent(COMPONENT_TYPE::DECAL); }
 
 
 public:
