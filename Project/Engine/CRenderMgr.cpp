@@ -99,7 +99,7 @@ void CRenderMgr::Tick()
 			if (nullptr == m_vecCam[i])
 				continue;
 
-			Render_Sub(m_vecCam[1]);
+			Render_Sub(m_vecCam[i]);
 		}
 	}
 
@@ -221,6 +221,12 @@ void CRenderMgr::Render(CCamera* _Cam)
 	_Cam->render_deferred();
 
 	// ===============
+	// DECAL RENDERING
+	// ===============
+	m_arrMRT[(UINT)MRT_TYPE::DECAL]->OMSet();
+	_Cam->render_decal();
+
+	// ===============
 	// LIGHT RENDERING
 	// ===============
 	m_arrMRT[(UINT)MRT_TYPE::LIGHT]->OMSet();
@@ -271,12 +277,13 @@ void CRenderMgr::RenderDebugShape()
 	Ptr<CGraphicShader> pDebugShape = CAssetMgr::GetInst()->FindAsset<CGraphicShader>(L"DebugShapeShader");
 	Ptr<CGraphicShader> pDebugLine = CAssetMgr::GetInst()->FindAsset<CGraphicShader>(L"DebugLineShader");
 
-	m_DebugObject->MeshRender()->GetMaterial()->SetShader(pDebugShape);
+
 
 	for (; iter != m_DebugShapeList.end(); )
 	{
 		m_DebugObject->MeshRender()->GetMaterial()->GetShader()->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 		m_DebugObject->MeshRender()->GetMaterial()->GetShader()->SetRSType(RS_TYPE::CULL_NONE);
+		m_DebugObject->MeshRender()->GetMaterial()->SetShader(pDebugShape);
 
 		// 디버그 요청 모양에 맞는 메시를 가져옴
 		switch ((*iter).Shape)
@@ -448,6 +455,27 @@ void CRenderMgr::CreateMRT()
 		m_arrMRT[(UINT)MRT_TYPE::LIGHT]->Create(2, arrRT, pDSTex);
 		m_arrMRT[(UINT)MRT_TYPE::LIGHT]->SetClearColor(arrClearColor, false);
 	}
+
+	// =====
+	// DECAL
+	// =====
+	{
+		Vec2 vResolution = CDevice::GetInst()->GetResolution();
+
+		Ptr<CTexture> arrRT[8] =
+		{
+			CAssetMgr::GetInst()->FindAsset<CTexture>(L"AlbedoTargetTex"),
+			CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"),
+		};
+
+		Ptr<CTexture> pDSTex = nullptr;
+		Vec4		  arrClearColor[8] = { Vec4(0.f, 0.f, 0.f, 0.f), };
+
+		m_arrMRT[(UINT)MRT_TYPE::DECAL] = new CMRT;
+		m_arrMRT[(UINT)MRT_TYPE::DECAL]->SetName(L"Decal");
+		m_arrMRT[(UINT)MRT_TYPE::DECAL]->Create(2, arrRT, pDSTex);
+		m_arrMRT[(UINT)MRT_TYPE::DECAL]->SetClearColor(arrClearColor, false);
+	}
 }
 
 void CRenderMgr::ClearMRT()
@@ -511,9 +539,14 @@ void CRenderMgr::CreateMaterial()
 	m_MergeMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"AlbedoTargetTex"));
 	m_MergeMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
 	m_MergeMtrl->SetTexParam(TEX_2, CAssetMgr::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_3, CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
 
 	// RectMesh
 	m_RectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
+
+	// DecalMtrl
+	Ptr<CMaterial> pDeaclMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DecalMtrl");
+	pDeaclMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
 }
 
 void CRenderMgr::RegisterCamera(CCamera* _cam, int _camPriority)

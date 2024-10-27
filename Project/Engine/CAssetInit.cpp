@@ -808,6 +808,20 @@ void CAssetMgr::CreateEngineGraphicShader()
 	AddAsset(L"Std3D_DeferredShader", pShader);
 
 
+	// DecalShader
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\decal.fx", "VS_Decal");
+	pShader->CreatePixelShader(L"shader\\decal.fx", "PS_Decal");
+	pShader->SetRSType(RS_TYPE::CULL_FRONT);
+	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetBSType(BS_TYPE::DECAL);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DECAL);
+
+	pShader->AddTexParam(TEX_0, "Decal Texture");
+
+	AddAsset(L"DecalShader", pShader);
+
+
 	// GrayFilterShader
 	pShader = new CGraphicShader;
 	pShader->CreateVertexShader(L"shader\\postprocess_0.fx", "VS_Screen");
@@ -951,6 +965,11 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"Std3D_DeferredShader"));
 	AddAsset(L"Std3D_DeferredMtrl", pMtrl);
+
+	// DecalMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"DecalShader"));
+	AddAsset(L"DecalMtrl", pMtrl);
 
 	// GrayFilterMtrl
 	pMtrl = new CMaterial(true);

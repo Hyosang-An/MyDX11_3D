@@ -114,6 +114,7 @@ enum class BS_TYPE
 	ALPHABLEND_COVERAGE,
 	ALPHABLEND,
 	ONE_ONE, // 기존의 렌더타겟에 픽셀쉐이더에서 계산된 값을 1:1로 더한다.
+	DECAL,
 	END,
 };
 
@@ -232,6 +233,7 @@ enum class MRT_TYPE
 
 	DEFERRED,	// 5개
 	LIGHT,		// 2개
+	DECAL,		// 2개
 	SHADOWMAP,  // 1개
 
 	END,

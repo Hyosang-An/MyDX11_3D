@@ -85,6 +85,11 @@ void CEditorMgr::EditorObjectProgress()
 	{
 		m_vecEditorObject[i]->FinalTick();
 	}
+
+	// 디버그 랜더링
+	DrawDebugLine(Vec3(0.f, 0.f, 0.f), Vec3(1000.f, 0.f, 0.f), Vec4(1.f, 0.f, 0.f, 1.f), 0.f, true);
+	DrawDebugLine(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 1000.f, 0.f), Vec4(0.f, 1.f, 0.f, 1.f), 0.f, true);
+	DrawDebugLine(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, 1000.f), Vec4(0.f, 0.f, 1.f, 1.f), 0.f, true);
 }
 
 void CEditorMgr::ImGuiTick()

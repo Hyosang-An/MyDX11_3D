@@ -39,6 +39,7 @@ private:
 	Matrix      m_matProjInv;
 
     vector<CGameObject*>    m_vecDeferred;      // Deferred
+    vector<CGameObject*>    m_vecDecal;         // Decal
 
     vector<CGameObject*>    m_vecOpaque;        // 불투명
     vector<CGameObject*>    m_vecMasked;        // 불투명, 투명
@@ -97,6 +98,7 @@ public:
 private:
     void SortGameObject();
     void render_deferred();
+    void render_decal();
 
     void render_opaque();
     void render_masked();

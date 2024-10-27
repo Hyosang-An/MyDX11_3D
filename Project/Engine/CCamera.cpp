@@ -138,6 +138,10 @@ void CCamera::SortGameObject()
 				m_vecDeferred.push_back(vecObjects[j]);
 				break;
 
+			case DOMAIN_DECAL:
+				m_vecDecal.push_back(vecObjects[j]);
+				break;
+
 			case DOMAIN_OPAQUE:
 				m_vecOpaque.push_back(vecObjects[j]);
 				break;
@@ -170,6 +174,15 @@ void CCamera::render_deferred()
 	for (size_t i = 0; i < m_vecDeferred.size(); ++i)
 	{
 		m_vecDeferred[i]->Render();
+	}
+}
+
+void CCamera::render_decal()
+{
+	// Decal
+	for (size_t i = 0; i < m_vecDecal.size(); ++i)
+	{
+		m_vecDecal[i]->Render();
 	}
 }
 
@@ -265,6 +278,7 @@ void CCamera::render_ui()
 void CCamera::clear()
 {
 	m_vecDeferred.clear();
+	m_vecDecal.clear();
 	m_vecOpaque.clear();
 	m_vecMasked.clear();
 	m_vecTransparent.clear();

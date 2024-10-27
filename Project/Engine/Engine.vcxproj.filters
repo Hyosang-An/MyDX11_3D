@@ -555,5 +555,8 @@
     <FxCompile Include="merge.fx">
       <Filter>HLSL\02. Render\3D</Filter>
     </FxCompile>
+    <FxCompile Include="decal.fx">
+      <Filter>HLSL\02. Render\3D</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
