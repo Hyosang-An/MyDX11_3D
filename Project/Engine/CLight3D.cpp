@@ -5,22 +5,34 @@
 #include "CAssetMgr.h"
 
 #include "CTransform.h"
+#include "CCamera.h"
 
 CLight3D::CLight3D()
 	: CComponent(COMPONENT_TYPE::LIGHT3D)
 {
+	SetLightType(LIGHT_TYPE::DIRECTIONAL);
+
+	// 광원 전용 카메라
+	m_Cam = new CGameObject;
+	m_Cam->AddComponent(new CTransform);
+	m_Cam->AddComponent(new CCamera);
 }
 
 CLight3D::CLight3D(const CLight3D& _Origin)
 	: CComponent(_Origin)
 	, m_Info(_Origin.m_Info)
-	, m_LightIdx(_Origin.m_LightIdx)
+	, m_LightIdx(-1)
 {
 	SetLightType(m_Info.Type);
+
+	// 카메라 복사
+	m_Cam = _Origin.m_Cam->Clone();
 }
 
 CLight3D::~CLight3D()
 {
+	if (nullptr != m_Cam)
+		delete m_Cam;
 }
 
 void CLight3D::SetLightType(LIGHT_TYPE _Type)
@@ -44,6 +56,10 @@ void CLight3D::SetLightType(LIGHT_TYPE _Type)
 		m_VolumeMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"ConeMesh");
 		m_LightMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"SpotLightMtrl");
 	}
+}
+
+void CLight3D::CreateShadowMap()
+{
 }
 
 void CLight3D::FinalTick()

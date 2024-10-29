@@ -11,6 +11,12 @@ private:
     Ptr<CMesh>      m_VolumeMesh;
     Ptr<CMaterial>  m_LightMtrl;
 
+    // 광원 시점에서 찍은 주변 사물의 깊이
+    Ptr<CTexture>   m_ShadowMapTex;
+
+    // 광원이 보유한 카메라
+    CGameObject* m_Cam = nullptr;
+
 public:
     void SetLightType(LIGHT_TYPE _Type);
     void SetRadius(float _Radius);
@@ -27,6 +33,8 @@ public:
 
 
     const tLightInfo& GetLightInfo() { return m_Info; }
+
+    void CreateShadowMap();
 
 public:
     virtual void FinalTick() override;

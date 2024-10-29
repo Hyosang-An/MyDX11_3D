@@ -70,27 +70,29 @@ PS_OUT PS_Decal(VS_OUT _in)
     }
     
     float4 vColor = float4(0.f, 1.f, 0.f, 1.f);
+    float4 vEmissive = float4(0.f, 0.f, 0.f, 0.f);
+    
+    float2 vUV = (float2) 0.f;
+    vUV.x = vLocalPos.x + 0.5f;
+    vUV.y = 1.f - (vLocalPos.z + 0.5f);
     
     if (g_btex_1)
     {
-        float2 vUV = (float2) 0.f;
-        vUV.x = vLocalPos.x + 0.5f;
-        vUV.y = 1.f - (vLocalPos.z + 0.5f);
         vColor = g_tex_1.Sample(g_sam_0, vUV);
+    }
+    
+    if (g_btex_2)
+    {
+        vEmissive = g_tex_2.Sample(g_sam_0, vUV);
     }
     
     //vColor.rgb *= vColor.a;
     
-    //output.vAlbedo = float4(0.f, 0.f, 0.f, 0.f);
-    output.vAlbedo = vColor;
-    
-    
-    //if (vColor.a == 0)
-    //{
-    //    discard;
-    //}
+    //output.vAlbedo = float4(0.f, 0.f, 0.f, 0.f);    
     //output.vEmissive = vColor;
-    //output.vEmissive = float4(vColor.rgb, 1.f) * vColor.a; // emissive는 기존의 값에 누적을 시켜야 하기 때문에 알파블렌드를 쓰지 않지만, 그러면 알파값이 1보다 작은 컬러도 그대로 더해지기 때문에 알파값을 곱해서 더해준다.
+    
+    output.vAlbedo = vColor;
+    output.vEmissive = float4(vColor.rgb, 1.f) * vColor.a; // emissive는 기존의 값에 누적을 시켜야 하기 때문에 알파블렌드를 쓰지 않지만, 그러면 알파값이 1보다 작은 컬러도 그대로 더해지기 때문에 알파값을 곱해서 더해준다.
    
     return output;
 }

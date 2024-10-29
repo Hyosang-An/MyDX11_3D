@@ -18,6 +18,8 @@ private:
     Ptr<CMaterial>      m_SharedMtrl;   // 공유 재질(마스터)
     Ptr<CMaterial>      m_DynamicMtrl;  // 임시 재질
 
+    bool                m_FrustumCheck = true; // 절두체 체크를 받을것인지 말것인지
+
 public:
     void SetMesh(Ptr<CMesh> _Mesh) { m_Mesh = _Mesh; }
     void SetMaterial(Ptr<CMaterial> _mtrl);
@@ -29,6 +31,8 @@ public:
     // 동적재질 생성 및 반환
     Ptr<CMaterial> GetDynamicMaterial();
 
+    void SetFrustumCheck(bool _Check) { m_FrustumCheck = _Check; }
+    bool IsFrustumCheck() { return m_FrustumCheck; }
 
 public:
     virtual void FinalTick() = 0;

@@ -177,6 +177,7 @@ call EngineHeaderCopy.bat</Command>
     <ClInclude Include="CFlipBook.h" />
     <ClInclude Include="CFlipBookComponent.h" />
     <ClInclude Include="CFontMgr.h" />
+    <ClInclude Include="CFrustum.h" />
     <ClInclude Include="CGameObject.h" />
     <ClInclude Include="CGraphicShader.h" />
     <ClInclude Include="CKeyMgr.h" />
@@ -239,6 +240,7 @@ call EngineHeaderCopy.bat</Command>
     <ClCompile Include="CFlipBook.cpp" />
     <ClCompile Include="CFlipBookComponent.cpp" />
     <ClCompile Include="CFontMgr.cpp" />
+    <ClCompile Include="CFrustum.cpp" />
     <ClCompile Include="CGameObject.cpp" />
     <ClCompile Include="CGraphicShader.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />

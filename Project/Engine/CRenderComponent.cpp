@@ -17,7 +17,8 @@ CRenderComponent::CRenderComponent(const CRenderComponent& _Origin) :
 	CComponent(_Origin),
 	m_Mesh(_Origin.m_Mesh),
 	m_Mtrl(_Origin.m_Mtrl),
-	m_SharedMtrl(_Origin.m_SharedMtrl)
+	m_SharedMtrl(_Origin.m_SharedMtrl),
+	m_FrustumCheck(_Origin.m_FrustumCheck)
 {
 	CLevel* pCurLevel = CLevelMgr::GetInst()->GetCurrentLevel();
 	if (nullptr != pCurLevel)

@@ -16,6 +16,7 @@ class CCamera :
 
 public:
     CCamera();
+    CCamera(const CCamera& _Other);
     ~CCamera();
     virtual CCamera* Clone() { return new CCamera(*this); }
 
@@ -24,6 +25,7 @@ private:
     UINT        m_LayerCheck;   // 원하는 레이어만 카메라에 찍히도록 설정
 
     PROJ_TYPE   m_ProjType;
+    class CFrustum* m_Frustum = nullptr;
 
     float       m_Width;
     float       m_Height;
