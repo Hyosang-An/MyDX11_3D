@@ -51,6 +51,8 @@ private:
     vector<CGameObject*>    m_vecPostProcess;   // 후처리 오브젝트
     vector<CGameObject*>    m_vecUI;   // UI 오브젝트
 
+    vector<CGameObject*>    m_vecShadowMap;     // 광원 시점에서 렌더링할 물체들
+
 public:
     void SetPriority(int _Priority) { m_Priority = _Priority; }
     void SetLayer(UINT _LayerIdx, bool _bCheck)
@@ -97,7 +99,7 @@ public:
     const Matrix& GetProjMat() { return m_matProj; }
     const Matrix& GetProjMatInv() { return m_matProjInv; }
 
-private:
+public:
     void SortGameObject();
     void render_deferred();
     void render_decal();
@@ -111,6 +113,9 @@ private:
     void render_ui();
 
     void clear();
+
+    void SortGameObject_ShadowMap();
+    void render_shadowmap();
 
 public:
     virtual void Begin() override;

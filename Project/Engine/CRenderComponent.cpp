@@ -5,6 +5,7 @@
 #include "CAssetMgr.h"
 
 #include "CLevel.h"
+#include "CTransform.h"
 
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _Type)
 	: CComponent(_Type)
@@ -61,6 +62,14 @@ Ptr<CMaterial> CRenderComponent::GetDynamicMaterial()
 	return m_Mtrl;
 }
 
+
+void CRenderComponent::render_shadowmap()
+{
+	// 재질은 ShadowMapMtrl 로 이미 Binding 되어있는걸 사용할 것
+	// 자신이 선택한 Mesh 로 렌더링 요청을 하면 된다.
+	Transform()->Binding();
+	GetMesh()->Render();
+}
 
 void CRenderComponent::SaveAssetDataToFile(FILE* _File)
 {

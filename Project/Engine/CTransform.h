@@ -9,6 +9,8 @@ public:
     CTransform();
     ~CTransform();
 
+    CTransform& operator = (const CTransform& _Other);
+
 private:
     Vec3    m_RelativePos;
     Vec3    m_RelativeScale;

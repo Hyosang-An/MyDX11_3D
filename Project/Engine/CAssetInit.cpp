@@ -822,6 +822,17 @@ void CAssetMgr::CreateEngineGraphicShader()
 	AddAsset(L"DecalShader", pShader);
 
 
+	// DirLightShadowMap Shader
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\shadowmap.fx", "VS_DirLightShadowMap");
+	pShader->CreatePixelShader(L"shader\\shadowmap.fx", "PS_DirLightShadowMap");
+	pShader->SetRSType(RS_TYPE::CULL_BACK);
+	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetBSType(BS_TYPE::DEFAULT);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_SHADOWMAP);
+	AddAsset(L"DirLightShadowMap", pShader);
+
+
 	// GrayFilterShader
 	pShader = new CGraphicShader;
 	pShader->CreateVertexShader(L"shader\\postprocess_0.fx", "VS_Screen");
@@ -970,6 +981,11 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"DecalShader"));
 	AddAsset(L"DecalMtrl", pMtrl);
+
+	// DirLightShadowMapMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"DirLightShadowMap"));
+	AddAsset(L"DirLightShadowMapMtrl", pMtrl);
 
 	// GrayFilterMtrl
 	pMtrl = new CMaterial(true);

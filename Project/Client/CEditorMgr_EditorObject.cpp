@@ -16,7 +16,7 @@ void CEditorMgr::CreateEditorObject()
 	pEditorCamera->AddComponent(new CCamera);
 	pEditorCamera->AddComponent(new CEditorCameraScript);
 
-	pEditorCamera->Transform()->SetRelativePos(0.f, 0.f, -500.f);
+	pEditorCamera->Transform()->SetRelativePos(0.f, 0.f, -1000.f);
 
 	pEditorCamera->Camera()->SetLayerAll();
 	pEditorCamera->Camera()->SetLayer(31, false);

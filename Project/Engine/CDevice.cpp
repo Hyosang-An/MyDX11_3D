@@ -3,6 +3,8 @@
 
 #include "CConstBuffer.h"
 #include "CAssetMgr.h"
+#include "CRenderMgr.h"
+#include "CCamera.h"
 
 CDevice::CDevice() :
 	m_hWnd{},
@@ -545,6 +547,9 @@ int CDevice::CreateSamplerState()
 
 void CDevice::ResizeResolution(UINT _newWidth, UINT _newHeight)
 {
+	// !!MRT 사용시 사용 불가!!
+	return;
+
 	if (_newWidth == 0 || _newHeight == 0)
 	{
 		// 창의 크기가 유효하지 않으면 처리 중단
@@ -566,11 +571,17 @@ void CDevice::ResizeResolution(UINT _newWidth, UINT _newHeight)
 
 	m_Context->OMSetRenderTargets(0, nullptr, nullptr);
 
+	auto& tmp = CAssetMgr::GetInst()->m_arrAssetMap[(UINT)ASSET_TYPE::TEXTURE];
+
 	// 텍스처 리소스 해제 및 관리자의 리소스 맵에서 제거
 	m_RTTex = nullptr; // 참조 카운트를 0으로 만들어서 메모리 해제
 	m_DSTex = nullptr; // 참조 카운트를 0으로 만들어서 메모리 해제
+
+
 	CAssetMgr::GetInst()->m_arrAssetMap[(UINT)ASSET_TYPE::TEXTURE].erase(L"RenderTargetTex");
 	CAssetMgr::GetInst()->m_arrAssetMap[(UINT)ASSET_TYPE::TEXTURE].erase(L"DepthStencilTex");
+
+
 
 	// 스왑 체인 크기 조정
 	HRESULT hr = m_SwapChain->ResizeBuffers(0, _newWidth, _newHeight, DXGI_FORMAT_UNKNOWN, 0);
@@ -597,4 +608,13 @@ void CDevice::ResizeResolution(UINT _newWidth, UINT _newHeight)
 	viewport.MaxDepth = 1.0f;
 
 	m_Context->RSSetViewports(1, &viewport);
+
+
+	// 메인 카메라의 해상도도 변경
+	auto mainCam = CRenderMgr::GetInst()->GetPOVCam();
+	if (mainCam)
+	{
+		mainCam->SetWidth(m_vResolution.x);
+		mainCam->SetHeight(m_vResolution.y);
+	}
 }

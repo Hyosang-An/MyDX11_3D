@@ -19,9 +19,12 @@ void CMRT::Create(int _RTCount, Ptr<CTexture>* _arrRT, Ptr<CTexture> _DSTex)
 {
 	m_RTCount = _RTCount;
 
-	for (int i = 0; i < m_RTCount; ++i)
+	for (int i = 0; i < 8; ++i)
 	{
-		m_arrRT[i] = _arrRT[i];
+		if (i < _RTCount)
+			m_arrRT[i] = _arrRT[i];
+		else
+			m_arrRT[i] = nullptr;
 	}
 
 	m_DSTex = _DSTex;

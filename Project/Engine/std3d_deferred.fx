@@ -91,6 +91,7 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
         output.vNormal = float4(mul(vNormal, matRot), 1.f);
     }
     
+    // 주변 환경 반사
     if (g_btexcube_0)
     {
         float3 vViewReflect = reflect(normalize(_in.vViewPos).xyz, output.vNormal.xyz);

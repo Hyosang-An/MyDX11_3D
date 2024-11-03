@@ -73,10 +73,10 @@ void CCamera::Begin()
 
 void CCamera::FinalTick()
 {
-	Vec2 vResolution = CDevice::GetInst()->GetResolution();
-	m_Width = vResolution.x;
-	m_Height = vResolution.y;
-	m_AspectRatio = m_Width / m_Height;
+	//Vec2 vResolution = CDevice::GetInst()->GetResolution();
+	//m_Width = vResolution.x;
+	//m_Height = vResolution.y;
+	//m_AspectRatio = m_Width / m_Height;
 
 	// View Space 란 카메라가 좌표계의 기준이 되는 좌표계
 	// 1. 카메라가 원점에 존재
@@ -321,6 +321,53 @@ void CCamera::clear()
 	m_vecParticles.clear();
 	m_vecPostProcess.clear();
 	m_vecUI.clear();
+}
+
+void CCamera::SortGameObject_ShadowMap()
+{
+	CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+
+	for (UINT i = 0; i < MAX_LAYER; ++i)
+	{
+		if (false == (m_LayerCheck & (1 << i)))
+		{
+			continue;
+		}
+
+		CLayer* pLayer = pLevel->GetLayer(i);
+
+		const vector<CGameObject*>& vecObjects = pLayer->GetObjects();
+		for (size_t j = 0; j < vecObjects.size(); ++j)
+		{
+			if (nullptr == vecObjects[j]->GetRenderComponent()
+				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMesh()
+				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMaterial()
+				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMaterial()->GetShader())
+			{
+				continue;
+			}
+
+			// 절두체 검사를 진행 함, 실패 함
+			/*if ( vecObjects[j]->GetRenderComponent()->IsFrustumCheck()
+				&& false == m_Frustum->FrustumCheck(vecObjects[j]->Transform()->GetWorldPos()
+												  , vecObjects[j]->Transform()->GetWorldScale().x / 2.f))
+			{
+				continue;
+			}*/
+
+			m_vecShadowMap.push_back(vecObjects[j]);
+		}
+	}
+}
+
+void CCamera::render_shadowmap()
+{
+	for (size_t i = 0; i < m_vecShadowMap.size(); ++i)
+	{
+		m_vecShadowMap[i]->GetRenderComponent()->render_shadowmap();
+	}
+
+	m_vecShadowMap.clear();
 }
 
 void CCamera::SaveToFile(FILE* _File)
