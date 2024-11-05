@@ -833,6 +833,25 @@ void CAssetMgr::CreateEngineGraphicShader()
 	AddAsset(L"DirLightShadowMap", pShader);
 
 
+	// Tessellation Test Shader
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\tess_test.fx", "VS_Tess");
+	pShader->CreateHullShader(L"shader\\tess_test.fx", "HS_Tess");
+	pShader->CreateDomainShader(L"shader\\tess_test.fx", "DS_Tess");
+	pShader->CreatePixelShader(L"shader\\tess_test.fx", "PS_Tess");
+
+	pShader->SetRSType(RS_TYPE::WIRE_FRAME);
+	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetBSType(BS_TYPE::DEFAULT);
+	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_OPAQUE);
+
+	pShader->AddScalarParam(FLOAT_0, "TessFactor");
+	pShader->AddScalarParam(INT_0, "TessFactor");
+
+	AddAsset(L"TessTestShader", pShader);
+
+
 	// GrayFilterShader
 	pShader = new CGraphicShader;
 	pShader->CreateVertexShader(L"shader\\postprocess_0.fx", "VS_Screen");
@@ -986,6 +1005,11 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"DirLightShadowMap"));
 	AddAsset(L"DirLightShadowMapMtrl", pMtrl);
+
+	// TessTestMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"TessTestShader"));
+	AddAsset(L"TessTestMtrl", pMtrl);
 
 	// GrayFilterMtrl
 	pMtrl = new CMaterial(true);

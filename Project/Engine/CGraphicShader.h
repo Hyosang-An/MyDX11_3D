@@ -18,10 +18,14 @@ class CGraphicShader :
 {
 private:
     ComPtr<ID3DBlob>			    m_VSBlob;
+    ComPtr<ID3DBlob>			    m_HSBlob;
+    ComPtr<ID3DBlob>			    m_DSBlob;
     ComPtr<ID3DBlob>			    m_GSBlob;
     ComPtr<ID3DBlob>			    m_PSBlob;
 
     ComPtr<ID3D11VertexShader>      m_VS;
+    ComPtr<ID3D11HullShader>        m_HS;
+    ComPtr<ID3D11DomainShader>      m_DS;
     ComPtr<ID3D11GeometryShader>    m_GS;
     ComPtr<ID3D11PixelShader>	    m_PS;
 
@@ -58,6 +62,8 @@ public:
 
 public:
     int CreateVertexShader(const wstring& _RelativePath, const string& _FuncName);
+    int CreateHullShader(const wstring& _RelativePath, const string& _FuncName);
+    int CreateDomainShader(const wstring& _RelativePath, const string& _FuncName);
     int CreateGeometryShader(const wstring& _RelativePath, const string& _FuncName);
     int CreatePixelShader(const wstring& _RelativePath, const string& _FuncName);
 
