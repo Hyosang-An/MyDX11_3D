@@ -175,7 +175,9 @@
     <ClInclude Include="CFrustum.h">
       <Filter>08. Component\07. Camera\Frustum</Filter>
     </ClInclude>
-    <ClInclude Include="CLandScape.h" />
+    <ClInclude Include="CLandScape.h">
+      <Filter>08. Component\RenderComponent\06. LandScape</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -328,7 +330,9 @@
     <ClCompile Include="CFrustum.cpp">
       <Filter>08. Component\07. Camera\Frustum</Filter>
     </ClCompile>
-    <ClCompile Include="CLandScape.cpp" />
+    <ClCompile Include="CLandScape.cpp">
+      <Filter>08. Component\RenderComponent\06. LandScape</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="01. Header">

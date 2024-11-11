@@ -4,7 +4,17 @@
 #include "value.fx"
 
 // ================
-// 테셀레이션 테스트
+// LandScapeShader
+// MRT          : Deferred
+// RS_TYPE      : CULL_BACK
+// BS_TYPE      : Default
+// DS_TYPE      : Less
+
+// Parameter
+#define FaceX       g_int_0
+#define FaceZ       g_int_1
+
+#define HeightMap   g_tex_0
 // ================
 struct VS_IN
 {
@@ -58,10 +68,10 @@ TessFactor PatchConstantFunc(InputPatch<VS_OUT, 3> _in, uint _PatchIdx : SV_Prim
 {
     TessFactor output = (TessFactor) 0.f;
     
-    output.arrEdge[0] = 1;
-    output.arrEdge[1] = 1;
-    output.arrEdge[2] = 1;
-    output.Inside = 1;
+    output.arrEdge[0] = g_float_0;
+    output.arrEdge[1] = g_float_0;
+    output.arrEdge[2] = g_float_0;
+    output.Inside = g_float_0;
     
     return output;
 }
@@ -121,6 +131,8 @@ DS_OUT DS_LandScape(OutputPatch<HS_OUT, 3> _in, float3 _Weight : SV_DomainLocati
                 , TessFactor _PatchTessFactor)
 {
     HS_OUT input = (HS_OUT) 0.f;
+    DS_OUT output = (DS_OUT) 0.f;
+    
     for (int i = 0; i < 3; ++i)
     {
         input.vLocalPos += _in[i].vLocalPos * _Weight[i];
@@ -132,14 +144,50 @@ DS_OUT DS_LandScape(OutputPatch<HS_OUT, 3> _in, float3 _Weight : SV_DomainLocati
         input.vUV += _in[i].vUV * _Weight[i];
     }
         
-    DS_OUT output = (DS_OUT) 0.f;
+    
+// 높이맵이 있다면
+    if (g_btex_0)
+    {
+        float2 vHeightMapUV = float2(input.vLocalPos.x / (float) FaceX
+                                    , 1.f - (input.vLocalPos.z / (float) FaceZ));
+        
+        input.vLocalPos.y = HeightMap.SampleLevel(g_sam_0, vHeightMapUV, 0).x;
+        
+        // 패치 분할레벨을 정점 간격으로 잡는다.
+        float fLocalStep = 1.f / _PatchTessFactor.Inside;
+                
+        float3 arrUDLR[4] =
+        {
+            float3(input.vLocalPos.x, 0.f, input.vLocalPos.z + fLocalStep),
+            float3(input.vLocalPos.x, 0.f, input.vLocalPos.z - fLocalStep),
+            float3(input.vLocalPos.x - fLocalStep, 0.f, input.vLocalPos.z),
+            float3(input.vLocalPos.x + fLocalStep, 0.f, input.vLocalPos.z)
+        };
+        
+        for (int i = 0; i < 4; ++i)
+        {
+            float2 vUV = float2(arrUDLR[i].x / (float) FaceX, 1.f - (arrUDLR[i].z / (float) FaceZ));
+            arrUDLR[i].y = HeightMap.SampleLevel(g_sam_0, vUV, 0).x;
+            arrUDLR[i] = mul(float4(arrUDLR[i], 1.f), matWorld).xyz;
+        }
+        
+        float3 vTangent = normalize(arrUDLR[3] - arrUDLR[2]);
+        float3 vBinormal = normalize(arrUDLR[1] - arrUDLR[0]);
+        float3 vNormal = cross(vTangent, vBinormal);
+                
+        output.vViewTangent = normalize(mul(float4(vTangent, 0.f), matView));
+        output.vViewBinormal = normalize(mul(float4(vBinormal, 0.f), matView));
+        output.vViewNormal = normalize(mul(float4(vNormal, 0.f), matView));
+    }
+    else
+    {
+        output.vViewNormal = normalize(mul(float4(input.vNormal, 0.f), matWV));
+        output.vViewTangent = normalize(mul(float4(input.vTangent, 0.f), matWV));
+        output.vViewBinormal = normalize(mul(float4(input.vBinormal, 0.f), matWV));
+    }
     
     output.Position = mul(float4(input.vLocalPos, 1.f), matWVP);
-    
     output.vViewPos = mul(float4(input.vLocalPos, 1.f), matWV);
-    output.vViewNormal = normalize(mul(float4(input.vNormal, 0.f), matWV));
-    output.vViewTangent = normalize(mul(float4(input.vTangent, 0.f), matWV));
-    output.vViewBinormal = normalize(mul(float4(input.vBinormal, 0.f), matWV));
         
     output.vUV = input.vUV;
     
