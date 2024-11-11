@@ -4,12 +4,15 @@ class CLandScape :
     public CRenderComponent
 {
 private:
-    UINT        m_FaceX;
-    UINT        m_FaceZ;
+    int        m_FaceX;
+    int        m_FaceZ;
+    Ptr<CTexture>   m_HeightMap;
 
+    float           m_TessLevel = 8.f;
 
 public:
-    void SetFace(UINT _X, UINT _Z);
+    void SetFace(int _X, int _Z);
+    void SetHeightMap(Ptr<CTexture> _HeightMap) { m_HeightMap = _HeightMap; }
 
 public:
     virtual void FinalTick() override;
