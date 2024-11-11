@@ -253,6 +253,16 @@ void CRenderMgr::Render(CCamera* _Cam)
 	// MERGE ALBEDO + LIGHTS ==> SwapChain
 	// ===================================
 	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
+	if (nullptr == m_SpecfiedTarget)
+	{
+		m_MergeMtrl->SetScalarParam(INT_0, 0);
+		m_MergeMtrl->SetTexParam(TEX_4, nullptr);
+	}
+	else
+	{
+		m_MergeMtrl->SetScalarParam(INT_0, 1);
+		m_MergeMtrl->SetTexParam(TEX_4, m_SpecfiedTarget);
+	}
 	m_MergeMtrl->Binding();
 	m_RectMesh->Render();
 

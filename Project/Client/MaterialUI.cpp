@@ -103,7 +103,7 @@ void MaterialUI::ShaderParameter()
 			case INT_3:
 			{
 				int data = *((int*)pMtrl->GetScalarParam(vecScalarParam[i].ParamType));
-				if (ParamUI::DragInt(&data, 1, vecScalarParam[i].strDesc))
+				if (ParamUI::InputInt(&data, vecScalarParam[i].strDesc))
 				{
 					pMtrl->SetScalarParam(vecScalarParam[i].ParamType, data);
 				}

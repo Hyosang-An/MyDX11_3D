@@ -3,12 +3,15 @@
 
 #include <Engine/CAssetMgr.h>
 #include <Engine/CLevelMgr.h>
+#include <Engine/CRenderMgr.h>
+
 #include <Engine/CLevel.h>
 #include <Engine/assets.h>
 #include <Engine/CGameObject.h>
 #include <Engine/CScript.h>
 #include <Engine/CLayer.h>
 #include <Scripts/CScriptMgr.h>
+
 
 #include "CLevelSaveLoad.h"
 #include "Inspector.h"
@@ -54,9 +57,12 @@ void MenuUI::Update()
 
 	Assets();
 
+	RenderTarget();
+
 	FontsCheck();
 
 	LevelPlayPauseStopButton();
+
 }
 
 void MenuUI::File()
@@ -395,6 +401,71 @@ void MenuUI::Assets()
 		if (ImGui::MenuItem("Edit FlipBook", nullptr, &IsActive))
 		{
 			CEditorMgr::GetInst()->FindEditorUI("FlipBookEditor")->SetActive(IsActive);
+		}
+
+		ImGui::EndMenu();
+	}
+}
+
+void MenuUI::RenderTarget()
+{
+	if (ImGui::BeginMenu("RenderTarget"))
+	{
+		Ptr<CTexture> pTarget = CRenderMgr::GetInst()->GetSpecifiedTarget();
+
+		auto AlbedoTargetTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"AlbedoTargetTex");
+		auto NormalTargetTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"NormalTargetTex");
+		auto PositionTargetTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex");
+		auto EmissiveTargetTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex");
+		auto DiffuseTargetTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex");
+		auto SpecularTargetTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex");
+
+		if (ImGui::MenuItem("Albedo Target", nullptr, pTarget == AlbedoTargetTex))
+		{
+			if (pTarget == AlbedoTargetTex)
+				CRenderMgr::GetInst()->SetSpecifiedTarget(nullptr);
+			else
+				CRenderMgr::GetInst()->SetSpecifiedTarget(AlbedoTargetTex);
+		}
+
+		if (ImGui::MenuItem("Normal Target", nullptr, pTarget == NormalTargetTex))
+		{
+			if (pTarget == NormalTargetTex)
+				CRenderMgr::GetInst()->SetSpecifiedTarget(nullptr);
+			else
+				CRenderMgr::GetInst()->SetSpecifiedTarget(NormalTargetTex);
+		}
+
+		if (ImGui::MenuItem("Position Target", nullptr, pTarget == PositionTargetTex))
+		{
+			if (pTarget == PositionTargetTex)
+				CRenderMgr::GetInst()->SetSpecifiedTarget(nullptr);
+			else
+				CRenderMgr::GetInst()->SetSpecifiedTarget(PositionTargetTex);
+		}
+
+		if (ImGui::MenuItem("Emissive Target", nullptr, pTarget == EmissiveTargetTex))
+		{
+			if (pTarget == EmissiveTargetTex)
+				CRenderMgr::GetInst()->SetSpecifiedTarget(nullptr);
+			else
+				CRenderMgr::GetInst()->SetSpecifiedTarget(EmissiveTargetTex);
+		}
+
+		if (ImGui::MenuItem("Diffuse Target", nullptr, pTarget == DiffuseTargetTex))
+		{
+			if (pTarget == DiffuseTargetTex)
+				CRenderMgr::GetInst()->SetSpecifiedTarget(nullptr);
+			else
+				CRenderMgr::GetInst()->SetSpecifiedTarget(DiffuseTargetTex);
+		}
+
+		if (ImGui::MenuItem("Specular Target", nullptr, pTarget == SpecularTargetTex))
+		{
+			if (pTarget == SpecularTargetTex)
+				CRenderMgr::GetInst()->SetSpecifiedTarget(nullptr);
+			else
+				CRenderMgr::GetInst()->SetSpecifiedTarget(SpecularTargetTex);
 		}
 
 		ImGui::EndMenu();

@@ -18,7 +18,7 @@ bool ParamUI::InputInt(int* _Data, const string& _Desc)
 	char szID[255] = {};
 	sprintf_s(szID, 255, "##Input%d", g_ID++);
 
-	if (ImGui::InputInt(szID, _Data, 0))
+	if (ImGui::InputInt(szID, _Data, 1))
 	{
 		return true;
 	}

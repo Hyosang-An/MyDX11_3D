@@ -39,6 +39,7 @@ private:
 	// ∫¥«’ Ω¶¿Ã¥ı
 	Ptr<CMesh>              m_RectMesh;
 	Ptr<CMaterial>          m_MergeMtrl;
+	Ptr<CTexture>           m_SpecfiedTarget;
 
 public:
 	void RegisterCamera(CCamera* _cam, int _camPriority);
@@ -48,6 +49,9 @@ public:
 	int RegisterLight3D(CLight3D* _Light) { m_vecLight3D.push_back(_Light); return m_vecLight3D.size() - 1; }
 
 	void PostProcessCopy(int _postProcessRTTex_index);
+
+	void SetSpecifiedTarget(Ptr<CTexture> _TargetTex) { m_SpecfiedTarget = _TargetTex; }
+	Ptr<CTexture> GetSpecifiedTarget() { return m_SpecfiedTarget; }
 
 	CCamera* GetPOVCam();
 

@@ -175,6 +175,7 @@
     <ClInclude Include="CFrustum.h">
       <Filter>08. Component\07. Camera\Frustum</Filter>
     </ClInclude>
+    <ClInclude Include="CLandScape.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -327,6 +328,7 @@
     <ClCompile Include="CFrustum.cpp">
       <Filter>08. Component\07. Camera\Frustum</Filter>
     </ClCompile>
+    <ClCompile Include="CLandScape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="01. Header">
@@ -571,6 +573,9 @@
       <Filter>HLSL\02. Render\3D</Filter>
     </FxCompile>
     <FxCompile Include="tess_test.fx">
+      <Filter>HLSL\02. Render\3D</Filter>
+    </FxCompile>
+    <FxCompile Include="landscape.fx">
       <Filter>HLSL\02. Render\3D</Filter>
     </FxCompile>
   </ItemGroup>

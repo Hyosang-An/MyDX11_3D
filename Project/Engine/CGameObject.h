@@ -60,6 +60,7 @@ public:
     class CParticleSystem* ParticleSystem() { return (CParticleSystem*)GetComponent(COMPONENT_TYPE::PARTICLE_SYSTEM); }
 	class CSkyBox* SkyBox() { return (CSkyBox*)GetComponent(COMPONENT_TYPE::SKYBOX); }
 	class CDecal* Decal() { return (CDecal*)GetComponent(COMPONENT_TYPE::DECAL); }
+	class CLandScape* LandScape() { return (CLandScape*)GetComponent(COMPONENT_TYPE::LANDSCAPE); }
 
 
 public:

@@ -18,6 +18,7 @@ private:
     void Level();
     void GameObject();
     void Assets();
+    void RenderTarget();
 
 	void LevelPlayPauseStopButton();
 

@@ -153,36 +153,38 @@ void CTestLevel::CreateTestLevel()
 	pSkyBox->Transform()->SetRelativePos(0.f, 0.f, 0.f);
 	pSkyBox->Transform()->SetRelativeScale(1000.f, 1000.f, 1000.f);
 
-	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\SkyWater.dds");
-	pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
-	pSkyBox->SkyBox()->SetSkyBoxType(CUBE);
-
-	//Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\Sky02.jpg");
+	//Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\SkyWater.dds");
 	//pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
-	//pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);
+	//pSkyBox->SkyBox()->SetSkyBoxType(CUBE);
+
+	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\Sky02.jpg");
+	pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
+	pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);
 
 	TestLevel->AddObject(0, pSkyBox);
 
 
-	// 평면 오브젝트
-	CGameObject* pPlane = new CGameObject;
-	pPlane->SetName(L"Plane");
-	pPlane->AddComponent(new CTransform);
-	pPlane->AddComponent(new CMeshRender);
-
-	pPlane->Transform()->SetRelativePos(0.f, -500.f, 0.f);
-	pPlane->Transform()->SetRelativeScale(4000.f, 4000.f, 1.f);
-	pPlane->Transform()->SetRelativeRotation(XM_PI / 2.f, 0.f, 0.f);
-
-	pPlane->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	pPlane->MeshRender()->SetMaterial(pStd3D_DeferredMtrl);
 
 	Ptr<CTexture> pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\LandScapeTexture\\gl1_ground_II_albedo.TGA");
 	Ptr<CTexture> pNTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");
 
-	pPlane->MeshRender()->GetMaterial()->SetTexParam(TEX_0, pTex);
-	pPlane->MeshRender()->GetMaterial()->SetTexParam(TEX_1, pNTex);
-	TestLevel->AddObject(3, pPlane);
+
+	//// 평면 오브젝트
+	//CGameObject* pPlane = new CGameObject;
+	//pPlane->SetName(L"Plane");
+	//pPlane->AddComponent(new CTransform);
+	//pPlane->AddComponent(new CMeshRender);
+
+	//pPlane->Transform()->SetRelativePos(0.f, -500.f, 0.f);
+	//pPlane->Transform()->SetRelativeScale(4000.f, 4000.f, 1.f);
+	//pPlane->Transform()->SetRelativeRotation(XM_PI / 2.f, 0.f, 0.f);
+
+	//pPlane->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	//pPlane->MeshRender()->SetMaterial(pStd3D_DeferredMtrl);
+
+	//pPlane->MeshRender()->GetMaterial()->SetTexParam(TEX_0, pTex);
+	//pPlane->MeshRender()->GetMaterial()->SetTexParam(TEX_1, pNTex);
+	//TestLevel->AddObject(3, pPlane);
 
 
 	// Player 추가
@@ -191,16 +193,18 @@ void CTestLevel::CreateTestLevel()
 	pPlayer->AddComponent(new CTransform);
 	pPlayer->AddComponent(new CMeshRender);
 
-	pPlayer->Transform()->SetRelativePos(0.f, 0.f, 0.f);
+	pPlayer->Transform()->SetRelativePos(0.f, 1000.f, 0.f);
 	pPlayer->Transform()->SetRelativeScale(500.f, 500.f, 500.f);
 	pPlayer->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 
 	pPlayer->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
 	pPlayer->MeshRender()->SetMaterial(pStd3D_DeferredMtrl);
 
+
+
 	pPlayer->MeshRender()->GetMaterial()->SetTexParam(TEX_0, pTex);
 	pPlayer->MeshRender()->GetMaterial()->SetTexParam(TEX_1, pNTex);
-	pPlayer->MeshRender()->GetMaterial()->SetTexParam(TEXCUBE_0, pSkyBoxTex);
+	//pPlayer->MeshRender()->GetMaterial()->SetTexParam(TEXCUBE_0, pSkyBoxTex);
 	TestLevel->AddObject(3, pPlayer);
 
 
@@ -220,6 +224,20 @@ void CTestLevel::CreateTestLevel()
 
 	TestLevel->AddObject(3, pDecal);
 
+
+
+	// LandScape 추가
+	CGameObject* pLandScape = new CGameObject;
+	pLandScape->SetName(L"LandScape");
+	pLandScape->AddComponent(new CTransform);
+	pLandScape->AddComponent(new CLandScape);
+
+	pLandScape->Transform()->SetRelativePos(0, 0.f, 0.f);
+	pLandScape->Transform()->SetRelativeScale(1000.f, 1000.f, 1000.f);
+
+	pLandScape->LandScape()->SetFace(2, 2);
+
+	TestLevel->AddObject(3, pLandScape);
 
 
 

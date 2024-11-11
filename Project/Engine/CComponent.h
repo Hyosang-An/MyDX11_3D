@@ -39,7 +39,7 @@ public:
     class CParticleSystem* ParticleSystem() { return m_Owner->ParticleSystem(); }
 	class CSkyBox* SkyBox() { return m_Owner->SkyBox(); }
 	class CDecal* Decal() { return m_Owner->Decal(); }
-    
+	class CLandScape* LandScape() { return m_Owner->LandScape(); }
 
 
 private:

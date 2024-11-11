@@ -11,10 +11,14 @@
 // DepthStencil : NO_TEST_NO_WRITE
 // BlendState   : Default
 // Parameter
+#define MERGE_MODE          g_int_0
+
 #define ALBEDO_TARGET   g_tex_0
 #define DIFFUSE_TARGET  g_tex_1
 #define SPECULAR_TARGET g_tex_2
 #define EMISSIVE_TARGET g_tex_3
+
+#define SPECIFIED_TARGET    g_tex_4
 // =================================
 struct VS_IN
 {
@@ -41,13 +45,21 @@ VS_OUT VS_Merge(VS_IN _in)
 float4 PS_Merge(VS_OUT _in) : SV_Target
 {
     float4 vOutColor = (float4) 0.f;
-
-    float4 vColor = ALBEDO_TARGET.Sample(g_sam_0, _in.vUV);
-    float4 vDiffuse = DIFFUSE_TARGET.Sample(g_sam_0, _in.vUV);
-    float4 vSpecular = SPECULAR_TARGET.Sample(g_sam_0, _in.vUV);
-    float4 vEmissive = EMISSIVE_TARGET.Sample(g_sam_0, _in.vUV);
     
-    vOutColor = vColor * vDiffuse + vSpecular + vEmissive;
+    if (MERGE_MODE == 0)
+    {
+        float4 vColor = ALBEDO_TARGET.Sample(g_sam_0, _in.vUV);
+        float4 vDiffuse = DIFFUSE_TARGET.Sample(g_sam_0, _in.vUV);
+        float4 vSpecular = SPECULAR_TARGET.Sample(g_sam_0, _in.vUV);
+        float4 vEmissive = EMISSIVE_TARGET.Sample(g_sam_0, _in.vUV);
+    
+        vOutColor = vColor * vDiffuse + vSpecular + vEmissive;
+    }
+    
+    else
+    {
+        vOutColor = SPECIFIED_TARGET.Sample(g_sam_0, _in.vUV);
+    }
     
     return vOutColor;
 }
