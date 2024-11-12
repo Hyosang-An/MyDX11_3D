@@ -58,11 +58,11 @@ void CLandScape::CreateMesh()
 	vector<Vtx> vecVtx;
 
 	// Á¤Á¡
-	for (UINT Row = 0; Row < m_FaceZ + 1; ++Row)
+	for (UINT Row = 0; Row <= m_FaceZ; ++Row)
 	{
-		for (UINT Col = 0; Col < m_FaceX + 1; ++Col)
+		for (UINT Col = 0; Col <= m_FaceX; ++Col)
 		{
-			v.vPos = Vec3((float)Col, 0.f, (float)Row);
+			v.vPos = Vec3((float)Col / m_FaceX - 0.5f, 0.f, (float)Row / m_FaceZ - 0.5f);
 			v.vNormal = Vec3(0.f, 1.f, 0.f);
 			v.vTangent = Vec3(1.f, 0.f, 0.f);
 			v.vBinormal = Vec3(0.f, 0.f, -1.f);
