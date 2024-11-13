@@ -48,7 +48,32 @@ float4 PS_SkyBox(VS_OUT _in) : SV_Target
     else if (1 == g_int_0)
     {
         if (g_btexcube_0)
-            vColor = g_texcube_0.Sample(g_sam_0, _in.vLocalDir);
+            vColor = g_texcube_0.Sample(g_sam_0, normalize(_in.vLocalDir));
+        
+        // 태양광 계산 부분 수정
+        tLightInfo sun = g_Light3D[0];
+        float3 sunDir = normalize(sun.WorldDir); // 픽셀 셰이더에서 계산
+        float fDot = dot(-sunDir, normalize(_in.vLocalDir));
+        
+        // smoothstep을 사용하여 부드러운 경계 변화 적용
+        float degree = 2.f;
+        float fadeEnd = cos(degree * PI / 180); // 30도의 코사인 값
+        float fadeStart = cos((degree + 2) * PI / 180); // fade 시작 각도 (예: 32도)
+        
+        // fDot이 fadeStart에서 fadeEnd로 갈 때 부드럽게 변화
+        float intensity = saturate(smoothstep(fadeStart, fadeEnd, fDot));
+        vColor = lerp(vColor, float4(1.f, 1.f, 1.f, 1.f), intensity); // vColor = vColor + (targetColor - vColor) * intensity;
+        
+        
+        //tLightInfo sun = g_Light3D[0];
+        //sun.WorldDir = normalize(sun.WorldDir);
+        
+        //float fDot = dot(-sun.WorldDir, normalize(_in.vLocalDir));
+        //if (fDot > cos(30 * PI / 180))
+        //{
+        //    vColor = float4(1.f, 1.f, 1.f, 1.f);
+        //}
+        
     }
     
     return vColor;
