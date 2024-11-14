@@ -235,8 +235,9 @@ void CTestLevel::CreateTestLevel()
 	pLandScape->Transform()->SetRelativePos(0, 0.f, 0.f);
 	pLandScape->Transform()->SetRelativeScale(1000.f, 3000.f, 1000.f);
 
-	pLandScape->LandScape()->SetFace(32, 32);
-	pLandScape->LandScape()->SetHeightMap(CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\HeightMap_01.jpg"));
+	pLandScape->LandScape()->SetFace(16, 16);
+	//pLandScape->LandScape()->SetHeightMap(CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\HeightMap_01.jpg"));
+	pLandScape->LandScape()->CreateHeightMap(1024, 1024);
 
 	TestLevel->AddObject(3, pLandScape);
 
