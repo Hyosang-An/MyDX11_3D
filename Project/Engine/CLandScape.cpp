@@ -37,12 +37,12 @@ void CLandScape::Init()
 	CreateTextureAndStructuredBuffer();
 
 	// BrushTexture 추가	
-	AddBrushTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\brush\\TX_GlowScene_2.png"));
-	AddBrushTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\brush\\TX_HitFlash_0.png"));
-	AddBrushTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\brush\\TX_HitFlash02.png"));
-	AddBrushTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\brush\\TX_Twirl02.png"));
-	AddBrushTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\brush\\FX_Flare.png"));
-	m_BrushIdx = 0;
+	//AddBrushTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\brush\\TX_GlowScene_2.png"));
+	//AddBrushTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\brush\\TX_HitFlash_0.png"));
+	//AddBrushTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\brush\\TX_HitFlash02.png"));
+	//AddBrushTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\brush\\TX_Twirl02.png"));
+	//AddBrushTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\brush\\FX_Flare.png"));
+	//m_BrushIdx = 0;
 }
 
 void CLandScape::FinalTick()
@@ -59,13 +59,13 @@ void CLandScape::FinalTick()
 
 	if (m_IsHeightMapCreated && KEY_PRESSED(KEY::LBTN))
 	{
-		assert(m_BrushIdx != -1);
-
 		// 높이맵 설정
 		m_HeightMapCS->SetBrushPos(Vec2(0.5f, 0.5f));
 		m_HeightMapCS->SetBrushScale(m_BrushScale);
 		m_HeightMapCS->SetHeightMap(m_HeightMap);
-		m_HeightMapCS->SetBrushTex(m_vecBrush[m_BrushIdx]);
+
+		if (m_BrushIdx != -1)
+			m_HeightMapCS->SetBrushTex(m_vecBrush[m_BrushIdx]);
 		m_HeightMapCS->Execute();
 	}
 }

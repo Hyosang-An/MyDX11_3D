@@ -31,10 +31,10 @@ int CParticleTickCS::Binding()
 	m_Const.iArr[0] = m_ParticleBuffer->GetElementCount();
 	m_Const.v4Arr[0] = m_ParticleWorldPos;
 
-	// 상수데이터 전달
-	CConstBuffer* pCB = CDevice::GetInst()->GetConstBuffer(CB_TYPE::MATERIAL);
-	pCB->SetData(&m_Const);
-	pCB->Binding_CS();
+	//// 상수데이터 전달
+	//CConstBuffer* pCB = CDevice::GetInst()->GetConstBuffer(CB_TYPE::MATERIAL);
+	//pCB->SetData(&m_Const);
+	//pCB->Binding_CS();
 
 	return S_OK;
 }

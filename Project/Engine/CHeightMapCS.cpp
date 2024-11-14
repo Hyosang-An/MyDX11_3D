@@ -15,37 +15,16 @@ CHeightMapCS::~CHeightMapCS()
 
 int CHeightMapCS::Binding()
 {
- //   if (nullptr == m_HeightMapTex)
- //       return E_FAIL;
-
-	//m_HeightMapTex->Binding_CS_UAV(0);
-
- //   CComputeShader::m_Const.iArr[0] = m_HeightMapTex->Width();
-	//CComputeShader::m_Const.iArr[1] = m_HeightMapTex->Height();
-
- //   CComputeShader::m_Const.v2Arr[0] = m_BrushScale;
- //   CComputeShader::m_Const.v2Arr[1] = m_BrushPos;
-
- //   if (nullptr != m_BrushTex)
- //   {
- //       m_BrushTex->Binding_CS_SRV(0);
- //       m_Const.btex[0] = 1;
- //   }
- //   else
- //       m_Const.btex[0] = 0;
-
- //   return S_OK;
-
     if (nullptr == m_HeightMapTex)
         return E_FAIL;
 
-    m_HeightMapTex->Binding_CS_UAV(0);
+	m_HeightMapTex->Binding_CS_UAV(0);
 
-    m_Const.iArr[0] = (UINT)m_HeightMapTex->Width();
-    m_Const.iArr[1] = (UINT)m_HeightMapTex->Height();
+    CComputeShader::m_Const.iArr[0] = m_HeightMapTex->Width();
+	CComputeShader::m_Const.iArr[1] = m_HeightMapTex->Height();
 
-    m_Const.v2Arr[0] = m_BrushScale;
-    m_Const.v2Arr[1] = m_BrushPos;
+    CComputeShader::m_Const.v2Arr[0] = m_BrushScale;
+    CComputeShader::m_Const.v2Arr[1] = m_BrushPos;
 
     if (nullptr != m_BrushTex)
     {
