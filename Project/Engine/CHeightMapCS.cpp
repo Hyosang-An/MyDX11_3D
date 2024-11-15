@@ -19,12 +19,12 @@ int CHeightMapCS::Binding()
         return E_FAIL;
 
 	m_HeightMapTex->Binding_CS_UAV(0);
+    m_RaycastOut->Binding_CS_SRV(20);
 
     CComputeShader::m_Const.iArr[0] = m_HeightMapTex->Width();
 	CComputeShader::m_Const.iArr[1] = m_HeightMapTex->Height();
 
     CComputeShader::m_Const.v2Arr[0] = m_BrushScale;
-    CComputeShader::m_Const.v2Arr[1] = m_BrushPos;
 
     if (nullptr != m_BrushTex)
     {
@@ -55,6 +55,9 @@ void CHeightMapCS::Clear()
 {
     m_HeightMapTex->Clear_CS_UAV();
     m_HeightMapTex = nullptr;
+
+    m_RaycastOut->Clear_CS_SRV();
+    m_RaycastOut = nullptr;
 
     if (nullptr != m_BrushTex)
     {

@@ -197,6 +197,7 @@ call EngineHeaderCopy.bat</Command>
     <ClInclude Include="CParticleTickCS.h" />
     <ClInclude Include="CPathMgr.h" />
     <ClInclude Include="CPrefab.h" />
+    <ClInclude Include="CRayCastCS.h" />
     <ClInclude Include="CRenderComponent.h" />
     <ClInclude Include="CRenderMgr.h" />
     <ClInclude Include="CScript.h" />
@@ -261,6 +262,7 @@ call EngineHeaderCopy.bat</Command>
     <ClCompile Include="CParticleTickCS.cpp" />
     <ClCompile Include="CPathMgr.cpp" />
     <ClCompile Include="CPrefab.cpp" />
+    <ClCompile Include="CRayCastCS.cpp" />
     <ClCompile Include="CRenderComponent.cpp" />
     <ClCompile Include="CRenderMgr.cpp" />
     <ClCompile Include="CScript.cpp" />
@@ -349,6 +351,12 @@ call EngineHeaderCopy.bat</Command>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="postprocess_0.fx">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="raycast.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>

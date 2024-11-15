@@ -15,7 +15,7 @@ private:
 
 public:
     Ptr<CTexture> GetRT(int _Index) { return m_arrRT[_Index]; }
-
+    const D3D11_VIEWPORT& GetViewPort() { return m_ViewPort; }
 
     void Create(int _RTCount, Ptr<CTexture>* _arrRT, Ptr<CTexture> _DSTex);
     void SetClearColor(Vec4* _Color, bool _Independent);

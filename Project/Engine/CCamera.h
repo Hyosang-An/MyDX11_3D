@@ -35,6 +35,8 @@ private:
     float       m_FOV; // Field Of View (시야 범위, 시야 각)
     float       m_ProjectionScale = 1.f;
 
+    tRay                    m_Ray;
+
 	Matrix      m_matView;
 	Matrix      m_matViewInv;
 	Matrix      m_matProj;
@@ -94,10 +96,16 @@ public:
     void SetScale(float _Scale) { m_ProjectionScale = _Scale; }
     float GetScale() { return m_ProjectionScale; }
 
+    const tRay& GetRay() { return m_Ray; }
+
     const Matrix& GetViewMat() { return m_matView; }
     const Matrix& GetViewMatInv() { return m_matViewInv; }
     const Matrix& GetProjMat() { return m_matProj; }
     const Matrix& GetProjMatInv() { return m_matProjInv; }
+
+
+private:
+    void CalcRay();
 
 public:
     void SortGameObject();
@@ -116,6 +124,7 @@ public:
 
     void SortGameObject_ShadowMap();
     void render_shadowmap();
+
 
 public:
     virtual void Begin() override;

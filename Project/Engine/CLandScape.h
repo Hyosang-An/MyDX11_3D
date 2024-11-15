@@ -1,6 +1,14 @@
 #pragma once
 #include "CRenderComponent.h"
 #include "CHeightMapCS.h"
+#include "CRaycastCS.h"
+
+struct tRaycastOut
+{
+    Vec2    Location;
+    UINT    Distance;
+    int     Success;
+};
 
 class CLandScape :
     public CRenderComponent
@@ -19,6 +27,11 @@ private:
     bool                    m_IsHeightMapCreated = false;
     Ptr<CHeightMapCS>       m_HeightMapCS;
 
+    // Raycasting
+    Ptr<CRaycastCS>         m_RaycastCS;
+    CStructuredBuffer*      m_RaycastOut;
+    tRaycastOut             m_Out;
+
 public:
     void SetFace(int _X, int _Z);
     void AddBrushTexture(Ptr<CTexture> _BrushTex) { m_vecBrush.push_back(_BrushTex); }
@@ -36,6 +49,7 @@ private:
     void CreateMesh();
     void CreateComputeShader();
     void CreateTextureAndStructuredBuffer();
+    int Raycasting();
 
 public:
     CLONE(CLandScape);

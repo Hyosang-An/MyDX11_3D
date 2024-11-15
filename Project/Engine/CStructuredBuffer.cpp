@@ -175,7 +175,7 @@ void CStructuredBuffer::GetData(void* _pData, UINT _DataSize)
 {
 	// 요청한 데이터 크기가 구조화버퍼 크기보다 작아야한다.
 	assert(_DataSize <= m_Desc.ByteWidth);
-	assert(m_Type == SRV_ONLY);
+	assert(m_Type == SRV_UAV);
 
 	if (0 == _DataSize)
 	{
