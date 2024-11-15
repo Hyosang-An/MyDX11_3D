@@ -148,10 +148,16 @@ DS_OUT DS_LandScape(OutputPatch<HS_OUT, 3> _in, float3 _Weight : SV_DomainLocati
 // 높이맵이 있다면
     if (g_btex_0)
     {
-        float2 vHeightMapUV = float2(input.vLocalPos.x / (float) FaceX
-                                    , 1.f - (input.vLocalPos.z / (float) FaceZ));
+        float2 vHeightMapUV = saturate(float2(input.vLocalPos.x / (float) FaceX
+                                    , 1.f - (input.vLocalPos.z / (float) FaceZ)));
         
-        input.vLocalPos.y = HeightMap.SampleLevel(g_sam_0, vHeightMapUV, 0).x;
+        if (0.f == vHeightMapUV.x || 1.f == vHeightMapUV.x ||
+            0.f == vHeightMapUV.y || 1.f == vHeightMapUV.y)
+        {
+
+        }
+        else
+            input.vLocalPos.y = HeightMap.SampleLevel(g_sam_0, vHeightMapUV, 0).x;
         
         // 패치 분할레벨을 정점 간격으로 잡는다.
         float fLocalStep = 1.f / _PatchTessFactor.Inside;
@@ -166,7 +172,7 @@ DS_OUT DS_LandScape(OutputPatch<HS_OUT, 3> _in, float3 _Weight : SV_DomainLocati
         
         for (int i = 0; i < 4; ++i)
         {
-            float2 vUV = float2(arrUDLR[i].x / (float) FaceX, 1.f - (arrUDLR[i].z / (float) FaceZ));
+            float2 vUV = saturate(float2(arrUDLR[i].x / (float) FaceX, 1.f - (arrUDLR[i].z / (float) FaceZ)));
             arrUDLR[i].y = HeightMap.SampleLevel(g_sam_0, vUV, 0).x;
             arrUDLR[i] = mul(float4(arrUDLR[i], 1.f), matWorld).xyz;
         }

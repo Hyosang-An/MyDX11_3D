@@ -39,7 +39,7 @@ void CS_HeightMap(int3 _ID : SV_DispatchThreadID)
         
     if (HasBrushTex)
     {
-        float2 vBrushUV = saturate((_ID.xy - vLeftTop) / vScale);
+        float2 vBrushUV = (_ID.xy - vLeftTop) / vScale;
         float Alpha = BRUSH_TEX.SampleLevel(g_sam_0, vBrushUV, 0).a;
         HeightMapTex[_ID.xy].r += Alpha * g_EngineDT * 0.5f;
     }

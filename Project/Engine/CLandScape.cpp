@@ -202,7 +202,7 @@ int CLandScape::Raycasting()
 	// 구조화버퍼 클리어
 	m_Out = {};
 	m_Out.Distance = 0xffffffff;
-	m_RaycastOut->SetData(&m_Out, 1);
+	m_RaycastOut->SetData(&m_Out);
 
 	// 카메라가 시점에서 마우스를 향하는 Ray 정보를 가져옴
 	tRay ray = pCam->GetRay();
