@@ -34,16 +34,16 @@ void CS_Raycast(uint3 _ID : SV_DispatchThreadID)
         // 2
         // | \
         // 0--1
-        vTriPos[0].x = ID.x / 2;
-        vTriPos[0].z = ID.y;
+        vTriPos[0].x = (ID.x / 2) / float(FACE_X) - 0.5f;
+        vTriPos[0].z = ID.y / float(FACE_Z) - 0.5f;
         vTriPos[0].y = 0.f;
         
-        vTriPos[1].x = (ID.x / 2) + 1;
-        vTriPos[1].z = ID.y;
+        vTriPos[1].x = ((ID.x / 2) + 1) / float(FACE_X) - 0.5f;
+        vTriPos[1].z = ID.y / float(FACE_Z) - 0.5f;
         vTriPos[1].y = 0.f;
         
-        vTriPos[2].x = ID.x / 2;
-        vTriPos[2].z = ID.y + 1;
+        vTriPos[2].x = (ID.x / 2) / float(FACE_X) - 0.5f;
+        vTriPos[2].z = (ID.y + 1) / float(FACE_Z) - 0.5f;
         vTriPos[2].y = 0.f;
     }
     else
@@ -52,16 +52,16 @@ void CS_Raycast(uint3 _ID : SV_DispatchThreadID)
         // 1--0
         //  \ |
         //    2
-        vTriPos[0].x = (ID.x / 2) + 1;
-        vTriPos[0].z = ID.y + 1;
+        vTriPos[0].x = ((ID.x / 2) + 1) / float(FACE_X) - 0.5f;
+        vTriPos[0].z = (ID.y + 1) / float(FACE_Z) - 0.5f;
         vTriPos[0].y = 0.f;
         
-        vTriPos[1].x = ID.x / 2;
-        vTriPos[1].z = ID.y + 1;
+        vTriPos[1].x = (ID.x / 2) / float(FACE_X) - 0.5f;
+        vTriPos[1].z = (ID.y + 1) / float(FACE_Z) - 0.5f;
         vTriPos[1].y = 0.f;
         
-        vTriPos[2].x = (ID.x / 2) + 1;
-        vTriPos[2].z = ID.y;
+        vTriPos[2].x = ((ID.x / 2) + 1) / float(FACE_X) - 0.5f;
+        vTriPos[2].z = ID.y / float(FACE_Z) - 0.5f;
         vTriPos[2].y = 0.f;
     }
         
@@ -69,7 +69,7 @@ void CS_Raycast(uint3 _ID : SV_DispatchThreadID)
     {
         for (int i = 0; i < 3; ++i)
         {
-            float2 vHeightMapUV = float2(vTriPos[i].x / (float) FACE_X, 1.f - vTriPos[i].z / (float) FACE_Z);
+            float2 vHeightMapUV = float2(vTriPos[i].x + 0.5f, 0.5f - vTriPos[i].z);
             vTriPos[i].y = HEIGHT_MAP.SampleLevel(g_sam_0, vHeightMapUV, 0).r;
         }
     }
@@ -84,9 +84,10 @@ void CS_Raycast(uint3 _ID : SV_DispatchThreadID)
         // 입력한 값으로 교체가 잘 되었다.
         if (m_OutBuffer[0].Distance == Dist)
         {
-            float2 CrossUV = vCrossPos.xz / float2(FACE_X, FACE_Z);
-            CrossUV.y = 1.f - CrossUV.y;
+            //float2 CrossUV = vCrossPos.xz / float2(FACE_X, FACE_Z);
+            //CrossUV.y = 1.f - CrossUV.y;
             
+            float2 CrossUV = float2(vCrossPos.x + 0.5f, 0.5f - vCrossPos.z);            
             m_OutBuffer[0].Location = CrossUV;
             m_OutBuffer[0].Success = 1;
         }
