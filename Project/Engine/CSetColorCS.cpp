@@ -24,10 +24,10 @@ int CSetColorCS::Binding()
 	m_Const.iArr[0] = m_TargetTex->Width();
 	m_Const.iArr[1] = m_TargetTex->Height();
 
-	// 상수데이터 전달
-	CConstBuffer* pCB = CDevice::GetInst()->GetConstBuffer(CB_TYPE::MATERIAL);
-	pCB->SetData(&m_Const);
-	pCB->Binding_CS();
+	//// 상수데이터 전달
+	//CConstBuffer* pCB = CDevice::GetInst()->GetConstBuffer(CB_TYPE::MATERIAL);
+	//pCB->SetData(&m_Const);
+	//pCB->Binding_CS();
 
 	return S_OK;
 }

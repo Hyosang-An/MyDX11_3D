@@ -178,6 +178,10 @@
     <ClInclude Include="CLandScape.h">
       <Filter>08. Component\RenderComponent\06. LandScape</Filter>
     </ClInclude>
+    <ClInclude Include="CHeightMapCS.h">
+      <Filter>HLSL\03. Compute\03. LandScape\HeightMap</Filter>
+    </ClInclude>
+    <ClInclude Include="CRayCastCS.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -333,6 +337,10 @@
     <ClCompile Include="CLandScape.cpp">
       <Filter>08. Component\RenderComponent\06. LandScape</Filter>
     </ClCompile>
+    <ClCompile Include="CHeightMapCS.cpp">
+      <Filter>HLSL\03. Compute\03. LandScape\HeightMap</Filter>
+    </ClCompile>
+    <ClCompile Include="CRayCastCS.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="01. Header">
@@ -515,6 +523,15 @@
     <Filter Include="08. Component\07. Camera\Frustum">
       <UniqueIdentifier>{e332994d-8212-4ad1-bcb0-d41061e7aec8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HLSL\03. Compute\03. LandScape">
+      <UniqueIdentifier>{6575a8bc-9663-4928-984e-659e09d37405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\03. Compute\03. LandScape\HeightMap">
+      <UniqueIdentifier>{04cc6831-6f6e-4182-9a5b-dcbb792304f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\03. Compute\03. LandScape\RayCasting">
+      <UniqueIdentifier>{b7e10a5f-1bbf-4f9b-80bf-8120baff820e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -581,6 +598,12 @@
     </FxCompile>
     <FxCompile Include="landscape.fx">
       <Filter>HLSL\02. Render\3D</Filter>
+    </FxCompile>
+    <FxCompile Include="heightmap.fx">
+      <Filter>HLSL\03. Compute\03. LandScape\HeightMap</Filter>
+    </FxCompile>
+    <FxCompile Include="raycast.fx">
+      <Filter>HLSL\03. Compute\03. LandScape\RayCasting</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

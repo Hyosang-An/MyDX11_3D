@@ -28,6 +28,11 @@ int CComputeShader::Execute()
 	if (FAILED(Binding()))
 		return E_FAIL;
 
+	// 상수데이터 전달
+	CConstBuffer* pCB = CDevice::GetInst()->GetConstBuffer(CB_TYPE::MATERIAL);
+	pCB->SetData(&m_Const);
+	pCB->Binding_CS();
+
 	// 필요한 그룹 수 계산
 	CalcGroupNum();
 

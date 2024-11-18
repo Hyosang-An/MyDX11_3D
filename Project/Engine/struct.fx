@@ -117,4 +117,11 @@ struct tParticleModule
     int isModuleOn[7];
 };
 
+struct tRaycastOut
+{
+    float2 Location;
+    uint Distance;
+    int Success;
+};
+
 #endif

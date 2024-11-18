@@ -57,6 +57,12 @@ struct tPixel
 	BYTE a;
 };
 
+struct tRay
+{
+	Vec3	vStart;
+	Vec3	vDir;
+};
+
 // ===================
 // 상수버퍼 연동 구조체
 // ===================

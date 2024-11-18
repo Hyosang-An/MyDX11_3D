@@ -68,10 +68,10 @@ TessFactor PatchConstantFunc(InputPatch<VS_OUT, 3> _in, uint _PatchIdx : SV_Prim
 {
     TessFactor output = (TessFactor) 0.f;
     
-    output.arrEdge[0] = g_float_0;
-    output.arrEdge[1] = g_float_0;
-    output.arrEdge[2] = g_float_0;
-    output.Inside = g_float_0;
+    output.arrEdge[0] = 8;
+    output.arrEdge[1] = 8;
+    output.arrEdge[2] = 8;
+    output.Inside = 8;
     
     return output;
 }
