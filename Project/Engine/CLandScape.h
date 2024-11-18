@@ -2,6 +2,7 @@
 #include "CRenderComponent.h"
 #include "CHeightMapCS.h"
 #include "CRaycastCS.h"
+#include "CWeightMapCS.h"
 
 struct tRaycastOut
 {
@@ -10,12 +11,30 @@ struct tRaycastOut
     int     Success;
 };
 
+enum LANDSCAPE_MODE
+{
+    NONE,
+    HEIGHTMAP,
+    SPLATING,
+};
+
+struct tWeight8
+{
+    float arrWeight[8];
+};
+
 class CLandScape :
     public CRenderComponent
 {
 private:
     int        m_FaceX;
     int        m_FaceZ;
+
+    // Tessellation 
+    float                   m_MinLevel = 0;
+    float                   m_MaxLevel = 4;
+    float                   m_MaxLevelRange = 2000.f;
+    float                   m_MinLevelRange = 6000.f;
 
     // Brush
     Vec2                    m_BrushScale = Vec2(0.2f, 0.2f);
@@ -29,8 +48,20 @@ private:
 
     // Raycasting
     Ptr<CRaycastCS>         m_RaycastCS;
-    CStructuredBuffer*      m_RaycastOut;
+    CStructuredBuffer*      m_RaycastOut = nullptr;
     tRaycastOut             m_Out;
+
+    // WeightMap
+    Ptr<CTexture>           m_ColorTex;
+    Ptr<CTexture>           m_NormalTex;
+    CStructuredBuffer*      m_WeightMap = nullptr;
+    UINT                    m_WeightWidth= 0;
+    UINT                    m_WeightHeight= 0;
+    Ptr<CWeightMapCS>       m_WeightMapCS;
+    int                     m_WeightIdx= 0;
+
+    // LandScape ¸ðµå
+    LANDSCAPE_MODE          m_Mode = LANDSCAPE_MODE::SPLATING;
 
 public:
     void SetFace(int _X, int _Z);

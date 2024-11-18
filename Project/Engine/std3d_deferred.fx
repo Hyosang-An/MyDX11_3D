@@ -87,7 +87,7 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
             _in.vViewNormal    
         };
         
-        // TangentSpace 방향 정보를 적용시킬 표면의 좌표계로 가져온다.
+        // TangentSpace 방향 정보를 적용시킬 좌표계(viewSpace)로 가져온다.
         output.vNormal = float4(mul(vNormal, matRot), 1.f);
     }
     

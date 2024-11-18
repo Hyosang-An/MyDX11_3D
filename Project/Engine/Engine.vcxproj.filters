@@ -175,13 +175,18 @@
     <ClInclude Include="CFrustum.h">
       <Filter>08. Component\07. Camera\Frustum</Filter>
     </ClInclude>
-    <ClInclude Include="CLandScape.h">
-      <Filter>08. Component\RenderComponent\06. LandScape</Filter>
-    </ClInclude>
     <ClInclude Include="CHeightMapCS.h">
       <Filter>HLSL\03. Compute\03. LandScape\HeightMap</Filter>
     </ClInclude>
-    <ClInclude Include="CRayCastCS.h" />
+    <ClInclude Include="CLandScape.h">
+      <Filter>08. Component\RenderComponent\06. LandScape</Filter>
+    </ClInclude>
+    <ClInclude Include="CRayCastCS.h">
+      <Filter>HLSL\03. Compute\03. LandScape\RayCasting</Filter>
+    </ClInclude>
+    <ClInclude Include="CWeightMapCS.h">
+      <Filter>HLSL\03. Compute\03. LandScape\WeightMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -340,7 +345,12 @@
     <ClCompile Include="CHeightMapCS.cpp">
       <Filter>HLSL\03. Compute\03. LandScape\HeightMap</Filter>
     </ClCompile>
-    <ClCompile Include="CRayCastCS.cpp" />
+    <ClCompile Include="CRayCastCS.cpp">
+      <Filter>HLSL\03. Compute\03. LandScape\RayCasting</Filter>
+    </ClCompile>
+    <ClCompile Include="CWeightMapCS.cpp">
+      <Filter>HLSL\03. Compute\03. LandScape\WeightMap</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="01. Header">
@@ -532,6 +542,9 @@
     <Filter Include="HLSL\03. Compute\03. LandScape\RayCasting">
       <UniqueIdentifier>{b7e10a5f-1bbf-4f9b-80bf-8120baff820e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HLSL\03. Compute\03. LandScape\WeightMap">
+      <UniqueIdentifier>{51198543-d4c2-4432-b92e-4f5dc8fbdd0f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -604,6 +617,9 @@
     </FxCompile>
     <FxCompile Include="raycast.fx">
       <Filter>HLSL\03. Compute\03. LandScape\RayCasting</Filter>
+    </FxCompile>
+    <FxCompile Include="weightmap.fx">
+      <Filter>HLSL\03. Compute\03. LandScape\WeightMap</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

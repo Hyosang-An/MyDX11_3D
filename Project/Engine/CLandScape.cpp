@@ -24,6 +24,9 @@ CLandScape::~CLandScape()
 {
 	if (nullptr != m_RaycastOut)
 		delete m_RaycastOut;
+
+	if (nullptr != m_WeightMap)
+		delete m_WeightMap;
 }
 
 void CLandScape::Init()
@@ -52,6 +55,17 @@ void CLandScape::Init()
 
 void CLandScape::FinalTick()
 {
+	// 모드 전환
+	if (KEY_JUST_PRESSED(KEY::NUM6))
+	{
+		if (HEIGHTMAP == m_Mode)
+			m_Mode = SPLATING;
+		else if (SPLATING == m_Mode)
+			m_Mode = NONE;
+		else
+			m_Mode = HEIGHTMAP;
+	}
+
 	// 브러쉬 바꾸기
 	if (KEY_JUST_PRESSED(KEY::NUM7))
 	{
@@ -62,23 +76,53 @@ void CLandScape::FinalTick()
 			m_BrushIdx = 0;
 	}
 
-	if (m_IsHeightMapCreated && KEY_PRESSED(KEY::LBTN))
+	// 가중치 인덱스 바꾸기
+	if (KEY_JUST_PRESSED(KEY::NUM8))
 	{
-		Raycasting();
+		++m_WeightIdx;
+		if (m_ColorTex->GetArraySize() <= m_WeightIdx)
+			m_WeightIdx = 0;
+	}
 
-		if (m_Out.Success)
+	if (NONE == m_Mode)
+		return;
+
+	Raycasting();
+
+	if (HEIGHTMAP == m_Mode)
+	{
+		if (m_IsHeightMapCreated && KEY_PRESSED(KEY::LBTN))
 		{
-			// 높이맵 설정
-			m_HeightMapCS->SetBrushPos(m_RaycastOut);
-			m_HeightMapCS->SetBrushScale(m_BrushScale);
-			m_HeightMapCS->SetHeightMap(m_HeightMap);
+			if (m_Out.Success)
+			{
+				// 높이맵 설정
+				m_HeightMapCS->SetBrushPos(m_RaycastOut);
+				m_HeightMapCS->SetBrushScale(m_BrushScale);
+				m_HeightMapCS->SetHeightMap(m_HeightMap);
 
-			if (m_BrushIdx != -1)
-				m_HeightMapCS->SetBrushTex(m_vecBrush[m_BrushIdx]);
-			m_HeightMapCS->Execute();
+				if (m_BrushIdx != -1)
+					m_HeightMapCS->SetBrushTex(m_vecBrush[m_BrushIdx]);
+				m_HeightMapCS->Execute();
+			}
 		}
+	}
 
+	else if (SPLATING == m_Mode)
+	{
+		if (KEY_PRESSED(KEY::LBTN) && m_WeightWidth != 0 && m_WeightHeight != 0)
+		{
+			if (m_Out.Success)
+			{
+				m_WeightMapCS->SetBrushPos(m_RaycastOut);
+				m_WeightMapCS->SetBrushScale(m_BrushScale);
+				m_WeightMapCS->SetBrushTex(m_vecBrush[m_BrushIdx]);
+				m_WeightMapCS->SetWeightMap(m_WeightMap);
+				m_WeightMapCS->SetWeightIdx(m_WeightIdx);
+				m_WeightMapCS->SetWeightMapWidthHeight(m_WeightWidth, m_WeightHeight);
 
+				m_WeightMapCS->Execute();
+			}
+		}
 	}
 }
 
@@ -92,14 +136,48 @@ void CLandScape::Render()
 	GetMaterial()->SetScalarParam(INT_0, m_FaceX);
 	GetMaterial()->SetScalarParam(INT_1, m_FaceZ);
 
+	// 지형 모드
+	GetMaterial()->SetScalarParam(INT_2, (int)m_Mode);
+
+	// 텍스쳐 배열 개수
+	GetMaterial()->SetScalarParam(INT_3, (int)m_ColorTex->GetArraySize());
+
+	// 테셀레이션 레벨
+	GetMaterial()->SetScalarParam(VEC4_0, Vec4(m_MinLevel, m_MaxLevel, m_MinLevelRange, m_MaxLevelRange));
+
+	// 카메라 월드 위치
+	CCamera* pCam = CRenderMgr::GetInst()->GetPOVCam();
+	Vec4 camWorldPos;
+	camWorldPos = pCam->Transform()->GetWorldPos();
+	GetMaterial()->SetScalarParam(VEC4_1, Vec4(camWorldPos, 0));
+
 	// 지형에 적용시킬 높이맵
 	GetMaterial()->SetTexParam(TEX_0, m_HeightMap);
+
+	// 지형 색상 및 노말 텍스쳐
+	GetMaterial()->SetTexParam(TEXARR_0, m_ColorTex);
+	GetMaterial()->SetTexParam(TEXARR_1, m_NormalTex);
+
+	// Brush 정보
+	GetMaterial()->SetTexParam(TEX_1, m_vecBrush[m_BrushIdx]);
+	GetMaterial()->SetScalarParam(VEC2_0, m_BrushScale);
+	GetMaterial()->SetScalarParam(VEC2_1, m_Out.Location);
+	GetMaterial()->SetScalarParam(FLOAT_0, (float)m_Out.Success);
+
+	// 가중치 해상도
+	GetMaterial()->SetScalarParam(VEC2_2, Vec2(m_WeightWidth, m_WeightHeight));
+
+	// WeightMap t20 바인딩
+	m_WeightMap->Binding(20);
 
 	// 재질 바인딩
 	GetMaterial()->Binding();
 
 	// 렌더링
 	GetMesh()->Render();
+
+	// WeightMap 버퍼 바인딩 클리어
+	m_WeightMap->Clear(20);
 }
 
 void CLandScape::SetFace(int _X, int _Z)
@@ -134,6 +212,8 @@ void CLandScape::CreateMesh()
 			v.vNormal = Vec3(0.f, 1.f, 0.f);
 			v.vTangent = Vec3(1.f, 0.f, 0.f);
 			v.vBinormal = Vec3(0.f, 0.f, -1.f);
+
+			v.vUV = Vec2((float)Col, (float)m_FaceZ - Row);
 
 			vecVtx.push_back(v);
 		}
@@ -183,6 +263,14 @@ void CLandScape::CreateComputeShader()
 		m_RaycastCS = new CRaycastCS;
 		CAssetMgr::GetInst()->AddAsset<CComputeShader>(L"RaycastCS", m_RaycastCS.Get());
 	}
+
+	// WeightMapCS 생성
+	m_WeightMapCS = (CWeightMapCS*)CAssetMgr::GetInst()->FindAsset<CComputeShader>(L"WeightMapCS").Get();
+	if (nullptr == m_WeightMapCS)
+	{
+		m_WeightMapCS = new CWeightMapCS;
+		CAssetMgr::GetInst()->AddAsset<CComputeShader>(L"WeightMapCS", m_WeightMapCS.Get());
+	}
 }
 
 void CLandScape::CreateTextureAndStructuredBuffer()
@@ -190,6 +278,21 @@ void CLandScape::CreateTextureAndStructuredBuffer()
 	// Raycasting 결과를 받는 용도의 구조화버퍼
 	m_RaycastOut = new CStructuredBuffer;
 	m_RaycastOut->Create(sizeof(tRaycastOut), 1, SB_TYPE::SRV_UAV);
+
+	// LandScape 용 텍스쳐 로딩
+	m_ColorTex = CAssetMgr::GetInst()->Load<CTexture>(L"texture\\LandScapeTexture\\LS_Color.dds", L"texture\\LandScapeTexture\\LS_Color.dds");
+	//m_ColorTex->GenerateMip(6);
+
+	m_NormalTex = CAssetMgr::GetInst()->Load<CTexture>(L"texture\\LandScapeTexture\\LS_Normal.dds", L"texture\\LandScapeTexture\\LS_Color.dds");
+	//m_NormalTex->GenerateMip(6);
+
+	// 가중치 WeightMap 용 StructuredBuffer
+	m_WeightMap = new CStructuredBuffer;
+
+	m_WeightWidth = 1024;
+	m_WeightHeight = 1024;
+
+	m_WeightMap->Create(sizeof(tWeight8), m_WeightWidth * m_WeightHeight, SB_TYPE::SRV_UAV);
 }
 
 int CLandScape::Raycasting()
