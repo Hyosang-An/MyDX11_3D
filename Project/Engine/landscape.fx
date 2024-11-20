@@ -228,6 +228,8 @@ DS_OUT DS_LandScape(OutputPatch<HS_OUT, 3> _in, float3 _Weight : SV_DomainLocati
         {
             float2 vUV = saturate(float2(arrUDLR[i].x / (float) FaceX, 1.f - (arrUDLR[i].z / (float) FaceZ)));
             arrUDLR[i].y = HeightMap.SampleLevel(g_sam_0, vUV, 0).x;
+            
+            // 로컬 좌표들을 월드 좌표계로 변환 (월드에서 방향벡터 계산을 해야 되므로)
             arrUDLR[i] = mul(float4(arrUDLR[i], 1.f), matWorld).xyz;
         }
         
@@ -235,9 +237,9 @@ DS_OUT DS_LandScape(OutputPatch<HS_OUT, 3> _in, float3 _Weight : SV_DomainLocati
         float3 vBinormal = normalize(arrUDLR[1] - arrUDLR[0]);
         float3 vNormal = cross(vTangent, vBinormal);
                 
-        output.vViewTangent = normalize(mul(float4(vTangent, 0.f), matWV));
-        output.vViewBinormal = normalize(mul(float4(vBinormal, 0.f), matWV));
-        output.vViewNormal = normalize(mul(float4(vNormal, 0.f), matWV));
+        output.vViewTangent = normalize(mul(float4(vTangent, 0.f), matView));
+        output.vViewBinormal = normalize(mul(float4(vBinormal, 0.f), matView));
+        output.vViewNormal = normalize(mul(float4(vNormal, 0.f), matView));
     }
     else
     {
