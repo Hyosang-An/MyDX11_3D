@@ -33,6 +33,14 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "FMOD/fmod_vc.lib")
 #endif
 
+// Fbx Loader
+#include <FBXLoader/fbxsdk.h>
+#ifdef _DEBUG
+#pragma comment(lib, "FBXLoader/x64/debug/libfbxsdk-md.lib")
+#else
+#pragma comment(lib, "FBXLoader/x64/release/libfbxsdk-md.lib")
+#endif
+
 #include "SimpleMath.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
