@@ -281,10 +281,10 @@ void CLandScape::CreateTextureAndStructuredBuffer()
 
 	// LandScape 용 텍스쳐 로딩
 	m_ColorTex = CAssetMgr::GetInst()->Load<CTexture>(L"texture\\LandScapeTexture\\LS_Color.dds", L"texture\\LandScapeTexture\\LS_Color.dds");
-	//m_ColorTex->GenerateMip(6);
+	m_ColorTex->GenerateMip(6);
 
 	m_NormalTex = CAssetMgr::GetInst()->Load<CTexture>(L"texture\\LandScapeTexture\\LS_Normal.dds", L"texture\\LandScapeTexture\\LS_Color.dds");
-	//m_NormalTex->GenerateMip(6);
+	m_NormalTex->GenerateMip(6);
 
 	// 가중치 WeightMap 용 StructuredBuffer
 	m_WeightMap = new CStructuredBuffer;

@@ -2,7 +2,7 @@
 #include "CTexture.h"
 
 #include "CDevice.h"
-
+#include "CPathMgr.h"
 
 CTexture::CTexture()
 	: CAsset(ASSET_TYPE::TEXTURE)
@@ -73,7 +73,34 @@ int CTexture::Load(const wstring& _FilePath)
 
 int CTexture::Save(const wstring& _FilePath)
 {
-	return 0;
+	// GPU -> System
+	CaptureTexture(DEVICE, CONTEXT, m_Tex2D.Get(), m_Image);
+
+	// System -> File
+	wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(_FilePath);
+	SetRelativePath(strRelativePath);
+
+
+	HRESULT hr = E_FAIL;
+	if (1 == m_Image.GetMetadata().arraySize)
+	{
+		// png, jpg, jpeg, bmp, 
+		hr = SaveToWICFile(*m_Image.GetImages()
+			, WIC_FLAGS_NONE
+			, GetWICCodec(WICCodecs::WIC_CODEC_PNG)
+			, _FilePath.c_str());
+	}
+
+	else
+	{
+		hr = SaveToDDSFile(m_Image.GetImages()
+			, m_Image.GetMetadata().arraySize
+			, m_Image.GetMetadata()
+			, DDS_FLAGS_NONE
+			, _FilePath.c_str());
+	}
+
+	return hr;
 }
 
 // 가능한 Flag 조합
@@ -164,6 +191,99 @@ int CTexture::Create(ComPtr<ID3D11Texture2D> _Tex2D)
 	}
 
 	SetEngineAsset();
+
+	return S_OK;
+}
+
+// 각 텍스쳐가 여러개의 Mipmap을 가지고 있어도 원본 텍스쳐만 이용해서 텍스쳐배열을 만든다. 모든 레이어가 동일한 크기와 포맷을 가져야 한다.
+int CTexture::CreateArrayTexture(const vector<Ptr<CTexture>>& _vecTex)
+{
+	m_Desc = _vecTex[0]->GetDesc();
+	m_Desc.ArraySize = (UINT)_vecTex.size();
+	m_Desc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE;
+	m_Desc.MipLevels = 1;
+
+	if (FAILED(DEVICE->CreateTexture2D(&m_Desc, nullptr, m_Tex2D.GetAddressOf())))
+	{
+		return E_FAIL;
+	}
+
+	// 원본 각 텍스쳐를 생성된 배열 텍스쳐의 각 칸으로 복사시킨다.
+	for (size_t i = 0; i < _vecTex.size(); ++i)
+	{
+		UINT Offset = D3D11CalcSubresource(0, i, 1); // Subresource Index =(ArraySlice×MipLevels)+MipSlice
+
+		CONTEXT->UpdateSubresource(m_Tex2D.Get(), Offset, nullptr
+			, _vecTex[i]->GetPixels()
+			, _vecTex[i]->GetRowPitch() // RowPitch=Width×BytesPerPixel
+			, _vecTex[i]->GetSlicePitch()); // SlicePitch=RowPitch×Height
+	}
+
+	// Shader Resrouce View 생성
+	D3D11_SHADER_RESOURCE_VIEW_DESC tSRVDesc = {};
+
+	tSRVDesc.Format = m_Desc.Format;
+	tSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+	tSRVDesc.Texture2DArray.MipLevels = 1;
+	tSRVDesc.Texture2DArray.MostDetailedMip = 0;
+	tSRVDesc.Texture2DArray.ArraySize = m_Desc.ArraySize;
+
+	if (FAILED(DEVICE->CreateShaderResourceView(m_Tex2D.Get(), &tSRVDesc, m_SRV.GetAddressOf())))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+int CTexture::GenerateMip(UINT _LevelCnt)
+{
+	// CubeTexture 는 Mipmap 생성 금지 (근데 현재 로드되는 큐브맵 텍스쳐는 해당 플래그가 아니고 그냥 D3D_SRV_DIMENSION_TEXTURE2D플래그임.
+	assert(false == (m_Desc.MiscFlags & D3D11_SRV_DIMENSION_TEXTURECUBE));
+
+	m_Tex2D = nullptr;
+	m_RTV = nullptr;
+	m_DSV = nullptr;
+	m_SRV = nullptr;
+	m_UAV = nullptr;
+
+	m_Desc.MipLevels = _LevelCnt;
+	m_Desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	m_Desc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
+
+	if (FAILED(DEVICE->CreateTexture2D(&m_Desc, nullptr, m_Tex2D.GetAddressOf())))
+	{
+		return E_FAIL;
+	}
+
+	for (UINT i = 0; i < m_Desc.ArraySize; ++i)
+	{
+		UINT iSubIdx = D3D11CalcSubresource(0, i, m_Desc.MipLevels);
+
+		CONTEXT->UpdateSubresource(m_Tex2D.Get(), iSubIdx, nullptr
+			, m_Image.GetImage(0, i, 0)->pixels				// GetImage(mip, item, slice) 3D 텍스처 또는 Cube Map의 경우, 특정 슬라이스 또는 면(Face)을 지정합니다.2D 텍스처나 배열 텍스처에서는 slice 값은 일반적으로 0입니다.			
+			, m_Image.GetImage(0, i, 0)->rowPitch
+			, m_Image.GetImage(0, i, 0)->slicePitch);
+	}
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
+
+	if (2 <= m_Desc.ArraySize)
+	{
+		SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+		SRVDesc.Texture2DArray.ArraySize = m_Desc.ArraySize;
+		SRVDesc.Texture2DArray.MipLevels = m_Desc.MipLevels;
+		SRVDesc.Texture2DArray.MostDetailedMip = 0;
+	}
+	else
+	{
+		SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		SRVDesc.Texture2D.MipLevels = m_Desc.MipLevels;
+		SRVDesc.Texture2D.MostDetailedMip = 0;
+	}
+
+	if (FAILED(DEVICE->CreateShaderResourceView(m_Tex2D.Get(), &SRVDesc, m_SRV.GetAddressOf())))
+		return E_FAIL;
+
+	CONTEXT->GenerateMips(m_SRV.Get());
 
 	return S_OK;
 }

@@ -15,7 +15,7 @@ private:
 
     D3D11_TEXTURE2D_DESC                m_Desc;
 
-    UINT                                m_RecentBindingRegisterNum;
+    UINT                                m_RecentBindingRegisterNum = -1;
 
 public:
     ComPtr<ID3D11Texture2D>             GetTex2D() { return m_Tex2D; }
@@ -26,7 +26,10 @@ public:
 
     const D3D11_TEXTURE2D_DESC          GetDesc() { return m_Desc; }
 
+    const TexMetadata& GetMetaData() { return m_Image.GetMetadata(); }
     tPixel* GetPixels() { return (tPixel*)m_Image.GetPixels(); }
+    size_t GetRowPitch() { return m_Image.GetImages()->rowPitch; }
+    size_t GetSlicePitch() { return m_Image.GetImages()->slicePitch; }
 
     UINT Width() { return m_Desc.Width; }
     UINT Height() { return m_Desc.Height; }
@@ -39,6 +42,9 @@ public:
     // _Flags : D3D11_BIND_FLAG
     int Create(UINT _Width, UINT _Height, DXGI_FORMAT _PixelFormat, UINT _Flags, D3D11_USAGE _Usage = D3D11_USAGE_DEFAULT);
     int Create(ComPtr<ID3D11Texture2D> _Tex2D);
+    int CreateArrayTexture(const vector<Ptr<CTexture>>& _vecTex);
+
+    int GenerateMip(UINT _Level);
 
     // GracphiShader - t register
     void Binding(UINT _registerNum);

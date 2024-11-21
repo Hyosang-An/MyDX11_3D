@@ -299,8 +299,8 @@ PS_OUT PS_LandScape(DS_OUT _in)
     if (HasColorTex)
     {
         // 편미분
-        //float2 derivX = ddx(_in.vUV);
-        //float2 derivY = ddy(_in.vUV);
+        float2 derivX = ddx(_in.vUV);
+        float2 derivY = ddy(_in.vUV);
         
         float2 vFullUV = _in.vUV / float2(FaceX, FaceZ); // _in.vUV는 0~FaceX, 0~FaceZ 범위
         int2 vColRow = vFullUV * WEIGHT_RESOLUTION;
@@ -317,8 +317,8 @@ PS_OUT PS_LandScape(DS_OUT _in)
             
             if (0.f != Weight)
             {
-                vColor += COLOR_TEX.Sample(g_sam_0, float3(_in.vUV, i)) * Weight; //  texture_array.Sample(g_sam_0, float3(uv, layerIndex));
-                //vColor += COLOR_TEX.SampleGrad(g_sam_0, float3(_in.vUV, i), derivX * 0.25f, derivY * 0.25f) * Weight;
+                //vColor += COLOR_TEX.Sample(g_sam_0, float3(_in.vUV, i)) * Weight; //  texture_array.Sample(g_sam_0, float3(uv, layerIndex));
+                vColor += COLOR_TEX.SampleGrad(g_sam_0, float3(_in.vUV, i), derivX * 0.35f, derivY * 0.35f) * Weight;
             }
                         
             // 제일 높았던 가중치를 기록
@@ -331,8 +331,8 @@ PS_OUT PS_LandScape(DS_OUT _in)
         
         if (MaxIdx != -1)
         {
-            float3 vNormal = NORMAL_TEX.Sample(g_sam_0, float3(_in.vUV, MaxIdx));
-            
+            //float3 vNormal = NORMAL_TEX.Sample(g_sam_0, float3(_in.vUV, MaxIdx));
+            float3 vNormal = NORMAL_TEX.SampleGrad(g_sam_0, float3(_in.vUV, MaxIdx), derivX * 0.25f, derivY * 0.25f);
             // 추출한 값의 범위를 0 ~ 1 에서 -1 ~ 1 로 변경한다.
             vNormal = vNormal * 2.f - 1.f;
         

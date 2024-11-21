@@ -4,7 +4,7 @@ class CSound :
     public CAsset
 {
 private:
-    FMOD::Sound* m_Sound;        // Sound 버퍼
+    FMOD::Sound* m_Sound = nullptr;        // Sound 버퍼
     list<FMOD::Channel*>	m_listChannel;  // Sound 가 재생되고 있는 채널 리스트
 
 
