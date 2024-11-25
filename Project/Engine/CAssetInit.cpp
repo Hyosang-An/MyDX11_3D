@@ -130,7 +130,7 @@ void CAssetMgr::CreateEngineMesh()
 
 	// Index 버퍼 생성
 	UINT arrIdx[6] = {};
-	arrIdx[0] = 2;	arrIdx[0] = 1;	arrIdx[1] = 2;
+	arrIdx[0] = 2;	arrIdx[1] = 0;	arrIdx[2] = 1;
 	arrIdx[3] = 0; 	arrIdx[4] = 2;	arrIdx[5] = 3;
 
 	pMesh = new CMesh;
