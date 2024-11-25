@@ -3,6 +3,8 @@
 #include "CPathMgr.h"
 #include "CTaskMgr.h"
 
+#include "CMeshData.h"
+
 class CAsset;
 
 class CAssetMgr
@@ -51,6 +53,7 @@ public:
 		, D3D11_USAGE _Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT);
 
 	Ptr<CTexture> CreateTexture(wstring _strKey, ComPtr<ID3D11Texture2D> _Tex2D);
+	Ptr<CMeshData> LoadFBX(const wstring& _strPath);
 
 	void GetContentFiles();
 
@@ -113,9 +116,6 @@ Ptr<T> CAssetMgr::FindAsset(const wstring& _Key)
 
 	if (iter == m_arrAssetMap[(UINT)Type].end())
 		return nullptr;
-
-	//Ptr<CAsset> pAsset;
-	//Ptr<CMesh> pMesh = (CMesh*)pAsset.Get()
 
 	return (T*)iter->second.Get();
 }

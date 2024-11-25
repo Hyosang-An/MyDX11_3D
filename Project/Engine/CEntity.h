@@ -10,7 +10,7 @@ private:
 
 public:
 	void SetName(const wstring& _Name) { m_Name = _Name; }
-	const wstring& GetName() { return m_Name; }
+	const wstring& GetName() const { return m_Name; }
 	UINT GetID() { return m_ID; }
 
 

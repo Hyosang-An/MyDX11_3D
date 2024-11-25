@@ -1,6 +1,12 @@
 #pragma once
 #include "CComponent.h"
 
+struct tMtrlSet
+{
+    Ptr<CMaterial>  pSharedMtrl;    // 공유 메테리얼(마스터)
+    Ptr<CMaterial>  pDynamicMtrl;   // 공유 메테리얼의 복사본    
+    Ptr<CMaterial>  pCurMtrl;       // 현재 사용 중인 메테리얼
+};
 
 class CRenderComponent :
     public CComponent
@@ -13,23 +19,22 @@ public:
 
 private:
     Ptr<CMesh>          m_Mesh;
-    
-    Ptr<CMaterial>      m_Mtrl;         // 현재 사용중인 재질
-    Ptr<CMaterial>      m_SharedMtrl;   // 공유 재질(마스터)
-    Ptr<CMaterial>      m_DynamicMtrl;  // 임시 재질
+    vector<tMtrlSet>    m_vecMtrls; // 재질 
 
     bool                m_FrustumCheck = true; // 절두체 체크를 받을것인지 말것인지
 
 public:
-    void SetMesh(Ptr<CMesh> _Mesh) { m_Mesh = _Mesh; }
-    void SetMaterial(Ptr<CMaterial> _mtrl);
-
+    void SetMesh(Ptr<CMesh> _Mesh);
     Ptr<CMesh> GetMesh() { return m_Mesh; }
-    Ptr<CMaterial> GetMaterial() { return m_Mtrl; }
-    Ptr<CMaterial> GetSharedMtrl();
+
+    void SetMaterial(Ptr<CMaterial> _Mtrl, UINT _idx = 0);
+    Ptr<CMaterial> GetMaterial(UINT _idx = 0);
+    Ptr<CMaterial> GetSharedMtrl(UINT _idx = 0);
 
     // 동적재질 생성 및 반환
-    Ptr<CMaterial> GetDynamicMaterial();
+    Ptr<CMaterial> GetDynamicMaterial(UINT _idx = 0);
+
+    UINT GetMaterialCount() { return (UINT)m_vecMtrls.size(); }
 
     void SetFrustumCheck(bool _Check) { m_FrustumCheck = _Check; }
     bool IsFrustumCheck() { return m_FrustumCheck; }

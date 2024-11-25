@@ -6,6 +6,7 @@ class CAsset :
     template<typename T>
     friend class Ptr; // 스마트 포인터가 내부 모든 변수 및 메서드에 접근 가능하도록
     friend class CAssetMgr;
+    friend class CFBXLoader;
 
 public:
     CAsset(ASSET_TYPE _type);

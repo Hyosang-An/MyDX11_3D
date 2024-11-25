@@ -174,6 +174,7 @@ call EngineHeaderCopy.bat</Command>
     <ClInclude Include="CDevice.h" />
     <ClInclude Include="CEngine.h" />
     <ClInclude Include="CEntity.h" />
+    <ClInclude Include="CFBXLoader.h" />
     <ClInclude Include="CFlipBook.h" />
     <ClInclude Include="CFlipBookComponent.h" />
     <ClInclude Include="CFontMgr.h" />
@@ -190,6 +191,7 @@ call EngineHeaderCopy.bat</Command>
     <ClInclude Include="CLight3D.h" />
     <ClInclude Include="CMaterial.h" />
     <ClInclude Include="CMesh.h" />
+    <ClInclude Include="CMeshData.h" />
     <ClInclude Include="CMeshRender.h" />
     <ClInclude Include="CMRT.h" />
     <ClInclude Include="components.h" />
@@ -241,6 +243,7 @@ call EngineHeaderCopy.bat</Command>
     <ClCompile Include="CDevice.cpp" />
     <ClCompile Include="CEngine.cpp" />
     <ClCompile Include="CEntity.cpp" />
+    <ClCompile Include="CFBXLoader.cpp" />
     <ClCompile Include="CFlipBook.cpp" />
     <ClCompile Include="CFlipBookComponent.cpp" />
     <ClCompile Include="CFontMgr.cpp" />
@@ -257,6 +260,7 @@ call EngineHeaderCopy.bat</Command>
     <ClCompile Include="CLight3D.cpp" />
     <ClCompile Include="CMaterial.cpp" />
     <ClCompile Include="CMesh.cpp" />
+    <ClCompile Include="CMeshData.cpp" />
     <ClCompile Include="CMeshRender.cpp" />
     <ClCompile Include="CMRT.cpp" />
     <ClCompile Include="CParticleSystem.cpp" />

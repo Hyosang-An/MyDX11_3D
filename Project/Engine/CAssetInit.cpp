@@ -51,7 +51,8 @@ void CAssetMgr::GetContentFiles()
 
 			wstring strRelativePath = pair.second->GetRelativePath();
 
-			if (strRelativePath == L"" || false == std::filesystem::exists(strContentPath + strRelativePath))
+			// strRelativePath가 비어있으면 파일로부터 로드된게 아니란 뜻
+			if (strRelativePath != L"" && false == std::filesystem::exists(strContentPath + strRelativePath))
 			{
 				// AssetMgr에서만 들고 있는 경우
 				if (pair.second->GetRefCount() <= 1)

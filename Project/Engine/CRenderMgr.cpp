@@ -58,7 +58,6 @@ void CRenderMgr::Init()
 	m_DebugObject = new CGameObject;
 	m_DebugObject->AddComponent(new CTransform);
 	m_DebugObject->AddComponent(new CMeshRender);
-	m_DebugObject->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"));
 
 	// MRT 생성
 	CreateMRT();
@@ -304,31 +303,38 @@ void CRenderMgr::RenderDebugShape()
 
 	for (; iter != m_DebugShapeList.end(); )
 	{
-		m_DebugObject->MeshRender()->GetMaterial()->GetShader()->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
-		m_DebugObject->MeshRender()->GetMaterial()->GetShader()->SetRSType(RS_TYPE::CULL_NONE);
-		m_DebugObject->MeshRender()->GetMaterial()->SetShader(pDebugShape);
+		Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl");
+
+		pMtrl->GetShader()->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+		pMtrl->GetShader()->SetRSType(RS_TYPE::CULL_NONE);
+		pMtrl->SetShader(pDebugShape);
 
 		// 디버그 요청 모양에 맞는 메시를 가져옴
 		switch ((*iter).Shape)
 		{
 			case DEBUG_SHAPE::RECT:
 				m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh_Debug"));
+				m_DebugObject->MeshRender()->SetMaterial(pMtrl, 0);
 				break;
 			case DEBUG_SHAPE::CIRCLE:
 				m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"CircleMesh_Debug"));
+				m_DebugObject->MeshRender()->SetMaterial(pMtrl, 0);
 				break;
 			case DEBUG_SHAPE::LINE:
 				m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"PointMesh"));
-				m_DebugObject->MeshRender()->GetMaterial()->SetShader(pDebugLine);
-				m_DebugObject->MeshRender()->GetMaterial()->GetShader()->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+				m_DebugObject->MeshRender()->SetMaterial(pMtrl, 0);
+				pMtrl->SetShader(pDebugLine);
+				pMtrl->GetShader()->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 				break;
 			case DEBUG_SHAPE::CUBE:
 				m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"CubeMesh_Debug"));
+				m_DebugObject->MeshRender()->SetMaterial(pMtrl, 0);
 				break;
 			case DEBUG_SHAPE::SPHERE:
 				m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
-				m_DebugObject->MeshRender()->GetMaterial()->GetShader()->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-				m_DebugObject->MeshRender()->GetMaterial()->GetShader()->SetRSType(RS_TYPE::CULL_FRONT);
+				m_DebugObject->MeshRender()->SetMaterial(pMtrl, 0);
+				pMtrl->GetShader()->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+				pMtrl->GetShader()->SetRSType(RS_TYPE::CULL_FRONT);
 				break;
 		}
 
@@ -336,21 +342,21 @@ void CRenderMgr::RenderDebugShape()
 		m_DebugObject->Transform()->SetWorldMatrix((*iter).matWorld);
 
 		// 재질 세팅
-		m_DebugObject->MeshRender()->GetMaterial()->SetScalarParam(INT_0, (int)(*iter).Shape);
-		m_DebugObject->MeshRender()->GetMaterial()->SetScalarParam(VEC4_0, (*iter).vColor);
+		pMtrl->SetScalarParam(INT_0, (int)(*iter).Shape);
+		pMtrl->SetScalarParam(VEC4_0, (*iter).vColor);
 
 		if ((*iter).Shape == DEBUG_SHAPE::LINE)
 		{
 			// 시작점, 끝점
-			m_DebugObject->MeshRender()->GetMaterial()->SetScalarParam(VEC4_1, Vec4((*iter).vPos, 1.f));
-			m_DebugObject->MeshRender()->GetMaterial()->SetScalarParam(VEC4_2, Vec4((*iter).vScale, 1.f));
+			pMtrl->SetScalarParam(VEC4_1, Vec4((*iter).vPos, 1.f));
+			pMtrl->SetScalarParam(VEC4_2, Vec4((*iter).vScale, 1.f));
 		}
 
 		// 깊이판정 여부에 따라서, 쉐이더의 깊이판정 방식을 결정한다.
 		if ((*iter).DepthTest)
-			m_DebugObject->MeshRender()->GetMaterial()->GetShader()->SetDSType(DS_TYPE::NO_WRITE);
+			pMtrl->GetShader()->SetDSType(DS_TYPE::NO_WRITE);
 		else
-			m_DebugObject->MeshRender()->GetMaterial()->GetShader()->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+			pMtrl->GetShader()->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
 
 		// 렌더링
 		m_DebugObject->MeshRender()->Render();

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CMesh.h"
-//#include "CMeshData.h"
+#include "CMeshData.h"
 #include "CGraphicShader.h"
 #include "CComputeShader.h"
 #include "CTexture.h"
