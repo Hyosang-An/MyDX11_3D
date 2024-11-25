@@ -44,6 +44,8 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 
 	CFBXLoader loader;
 	loader.init();
+
+	// Texture와 Material 로드 및 파일로 저장
 	loader.LoadFbx(strFullPath);
 
 	// 메쉬 가져오기
@@ -56,10 +58,19 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 		wstring strMeshKey = L"mesh\\";
 		strMeshKey += path(strFullPath).stem();
 		strMeshKey += L".mesh";
-		CAssetMgr::GetInst()->AddAsset<CMesh>(strMeshKey, pMesh);
 
-		// 메시를 실제 파일로 저장
-		pMesh->Save(strMeshKey);
+		Ptr<CMesh> pExistingMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(strMeshKey);
+		if (pExistingMesh == nullptr)
+		{
+			// 메시를 실제 파일로 저장
+			CAssetMgr::GetInst()->AddAsset<CMesh>(strMeshKey, pMesh);
+			pMesh->Save(CPathMgr::GetInst()->GetContentPath() + strMeshKey);
+		}
+		else
+		{
+			delete pMesh;
+			pMesh = pExistingMesh.Get();
+		}
 	}
 
 	vector<Ptr<CMaterial>> vecMtrl;
@@ -84,10 +95,82 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _RelativePath)
 
 int CMeshData::Save(const wstring& _FilePath)
 {
-	return 0;
+	wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(_FilePath);
+	SetRelativePath(strRelativePath);
+
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + strRelativePath;
+
+	std::filesystem::path dir_path = _FilePath;
+	if (!std::filesystem::exists(dir_path.parent_path()))
+		std::filesystem::create_directories(dir_path.parent_path()); // 중간 디렉토리 재귀적으로 생성
+
+	FILE* pFile = nullptr;
+	errno_t err = _wfopen_s(&pFile, strFilePath.c_str(), L"wb");
+	assert(pFile);
+
+	// Mesh Key 저장	
+	// Mesh Data 저장
+	SaveAssetRef(m_pMesh, pFile);
+
+	// material 정보 저장
+	UINT iMtrlCount = (UINT)m_vecMtrl.size();
+	fwrite(&iMtrlCount, sizeof(UINT), 1, pFile);
+
+	UINT i = 0;
+	wstring strMtrlPath = CPathMgr::GetInst()->GetContentPath();
+	strMtrlPath += L"material\\";
+
+	for (; i < iMtrlCount; ++i)
+	{
+		if (nullptr == m_vecMtrl[i])
+			continue;
+
+		// Material 인덱스, Key, Path 저장
+		fwrite(&i, sizeof(UINT), 1, pFile);
+		SaveAssetRef(m_vecMtrl[i], pFile);
+	}
+
+	i = -1; // 마감 값
+	fwrite(&i, sizeof(UINT), 1, pFile);
+
+	fclose(pFile);
+
+	return S_OK;
 }
 
 int CMeshData::Load(const wstring& _FilePath)
 {
-	return 0;
+	FILE* pFile = NULL;
+	_wfopen_s(&pFile, _FilePath.c_str(), L"rb");
+
+	assert(pFile);
+
+	// Mesh Load
+	LoadAssetRef(m_pMesh, pFile);
+	assert(m_pMesh.Get());
+
+	// material 정보 읽기
+	UINT iMtrlCount = 0;
+	fread(&iMtrlCount, sizeof(UINT), 1, pFile);
+
+	m_vecMtrl.resize(iMtrlCount);
+
+	for (UINT i = 0; i < iMtrlCount; ++i)
+	{
+		UINT idx = -1;
+		fread(&idx, sizeof(UINT), 1, pFile);
+		if (idx == -1)
+			break;
+
+		wstring strKey, strPath;
+
+		Ptr<CMaterial> pMtrl;
+		LoadAssetRef(pMtrl, pFile);
+
+		m_vecMtrl[i] = pMtrl;
+	}
+
+	fclose(pFile);
+
+	return S_OK;
 }

@@ -67,9 +67,11 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
     output.vEmissive = float4(0.f, 0.f, 0.f, 0.f);
     output.vData = float4(0.f, 0.f, 0.f, 0.f);
     
+    // diffuse Texture
     if (g_btex_0)
         output.vAlbedo = g_tex_0.Sample(g_sam_0, _in.vUV);
     
+    // normal Texture
     if (g_btex_1)
     {
         float3 vNormal = g_tex_1.Sample(g_sam_0, _in.vUV).xyz;

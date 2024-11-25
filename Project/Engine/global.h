@@ -61,14 +61,6 @@ using std::set;
 #include <filesystem>
 using namespace std::filesystem;
 
-//#include "Ptr.h"
-//#include "singleton.h"
-//#include "define.h"
-//#include "enum.h"
-//#include "struct.h"
-//#include "assets.h"
-//#include "func.h"
-
 // Fbx Loader
 #include <FBXLoader/fbxsdk.h>
 #ifdef _DEBUG

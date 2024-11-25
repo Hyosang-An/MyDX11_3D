@@ -1142,8 +1142,8 @@ void CAssetMgr::LoadAsset(const path& _Path)
 
 	if (ext == L".mesh")
 		CAssetMgr::GetInst()->Load<CMesh>(_Path, _Path);
-	//else if (ext == L".mdat")
-		//CAssetMgr::GetInst()->Load<CMeshData>(_Path, _Path);
+	else if (ext == L".mdat")
+		CAssetMgr::GetInst()->Load<CMeshData>(_Path, _Path);
 	else if (ext == L".mtrl")
 		CAssetMgr::GetInst()->Load<CMaterial>(_Path, _Path);
 	else if (ext == L".prefab")

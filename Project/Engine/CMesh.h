@@ -20,7 +20,7 @@ public:
 
 private:
     ComPtr<ID3D11Buffer>    m_VB;
-    D3D11_BUFFER_DESC       m_VBDesc;
+    D3D11_BUFFER_DESC       m_VBDesc{};
     UINT                    m_VtxCount;
     Vtx*                    m_VtxSysMem;
 
@@ -41,7 +41,7 @@ public:
     void Render(UINT _Subset = 0);
     void Render_Particle(UINT _Count);
 
-    virtual int Load(const wstring& _FilePath) { return S_OK; }
-    virtual int Save(const wstring& _FilePath) { return S_OK; }
+    virtual int Save(const wstring& _FilePath) override;
+    virtual int Load(const wstring& _FilePath) override;
 };
 

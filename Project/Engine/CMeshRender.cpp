@@ -34,12 +34,6 @@ void CMeshRender::Render()
 	// 위치, 크기, 회전 상태정보 바인딩
 	Transform()->Binding();
 
-	//// 재질 바인딩(재질 상수, 쉐이더 등등)
-	//GetMaterial(0)->Binding();
-
-	//// 버텍스버퍼, 인덱스버퍼 바인딩 및 렌더링 호출
-	//GetMesh()->Render(0);
-
 
 	for (UINT i = 0; i < GetMesh()->GetSubsetCount(); ++i)
 	{

@@ -472,7 +472,10 @@ void CFBXLoader::CreateMaterial()
 			pMaterial->SetKey(strPath);
 			pMaterial->SetRelativePath(strPath);
 
-			pMaterial->SetShader(CAssetMgr::GetInst()->FindAsset<CGraphicShader>(L"Std3D_DeferredShader"));
+			auto pShader = CAssetMgr::GetInst()->FindAsset<CGraphicShader>(L"Std3D_DeferredShader");
+			if (pShader == nullptr)
+				assert(false);
+			pMaterial->SetShader(pShader);
 
 			wstring strTexKey = m_vecContainer[i].vecMtrl[j].strDiff;
 			Ptr<CTexture> pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(strTexKey);

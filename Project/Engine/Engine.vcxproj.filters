@@ -187,8 +187,12 @@
     <ClInclude Include="CWeightMapCS.h">
       <Filter>HLSL\03. Compute\03. LandScape\WeightMap</Filter>
     </ClInclude>
-    <ClInclude Include="CMeshData.h" />
-    <ClInclude Include="CFBXLoader.h" />
+    <ClInclude Include="CMeshData.h">
+      <Filter>06. Asset\02. MeshData</Filter>
+    </ClInclude>
+    <ClInclude Include="CFBXLoader.h">
+      <Filter>Module\FBXLoader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -353,8 +357,12 @@
     <ClCompile Include="CWeightMapCS.cpp">
       <Filter>HLSL\03. Compute\03. LandScape\WeightMap</Filter>
     </ClCompile>
-    <ClCompile Include="CMeshData.cpp" />
-    <ClCompile Include="CFBXLoader.cpp" />
+    <ClCompile Include="CMeshData.cpp">
+      <Filter>06. Asset\02. MeshData</Filter>
+    </ClCompile>
+    <ClCompile Include="CFBXLoader.cpp">
+      <Filter>Module\FBXLoader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="01. Header">

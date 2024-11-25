@@ -2,6 +2,7 @@
 #include "CMesh.h"
 
 #include "CDevice.h"
+#include "CPathMgr.h"
 
 CMesh::CMesh()
 	: CAsset(ASSET_TYPE::MESH)
@@ -185,3 +186,123 @@ void CMesh::Render_Particle(UINT _Count)
 
 	CONTEXT->DrawIndexedInstanced(m_vecIdxInfo[0].iIdxCount, _Count, 0, 0, 0);
 }
+
+int CMesh::Save(const wstring& _FilePath)
+{
+	// 상대경로 저장
+	wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(_FilePath);
+	SetRelativePath(strRelativePath);
+
+	std::filesystem::path dir_path = _FilePath;
+	if (!std::filesystem::exists(dir_path.parent_path()))
+		std::filesystem::create_directories(dir_path.parent_path()); // 중간 디렉토리 재귀적으로 생성
+
+	// 파일 쓰기모드로 열기
+	FILE* pFile = nullptr;
+	errno_t err = _wfopen_s(&pFile, _FilePath.c_str(), L"wb");
+	assert(pFile);
+
+	// 키값, 상대 경로	
+	SaveWString(GetName(), pFile);
+	SaveWString(GetKey(), pFile);
+	SaveWString(GetRelativePath(), pFile);
+
+	// 정점 데이터 저장				
+	int iByteSize = m_VBDesc.ByteWidth;
+	fwrite(&iByteSize, sizeof(int), 1, pFile);
+	fwrite(m_VtxSysMem, iByteSize, 1, pFile);
+
+	// 인덱스 정보
+	UINT iMtrlCount = (UINT)m_vecIdxInfo.size();
+	fwrite(&iMtrlCount, sizeof(UINT), 1, pFile);
+
+	UINT iIdxBuffSize = 0;
+	for (UINT i = 0; i < iMtrlCount; ++i)
+	{
+		fwrite(&m_vecIdxInfo[i], sizeof(tIndexInfo), 1, pFile);
+		fwrite(m_vecIdxInfo[i].pIdxSysMem
+			, m_vecIdxInfo[i].iIdxCount * sizeof(UINT)
+			, 1, pFile);
+	}
+
+	fclose(pFile);
+
+	return S_OK;
+}
+
+
+int CMesh::Load(const wstring& _FilePath)
+{
+	// 읽기모드로 파일열기
+	FILE* pFile = nullptr;
+	_wfopen_s(&pFile, _FilePath.c_str(), L"rb");
+
+	if (pFile == nullptr)
+	{
+		assert(false);
+		return E_FAIL;
+	}
+
+	// 키값, 상대경로
+	wstring strName, strKey, strRelativePath;
+	LoadWString(strName, pFile);
+	LoadWString(strKey, pFile);
+	LoadWString(strRelativePath, pFile);
+
+	SetName(strName);
+	SetKey(strKey);
+	SetRelativePath(strRelativePath);
+
+	// 정점데이터
+	UINT iByteSize = 0;
+	fread(&iByteSize, sizeof(UINT), 1, pFile);
+
+	m_VtxSysMem = (Vtx*)malloc(iByteSize);
+	//m_VtxSysMem = new Vtx[iByteSize / sizeof(Vtx)];
+	fread(m_VtxSysMem, 1, iByteSize, pFile);
+
+
+	D3D11_BUFFER_DESC tDesc = {};
+	tDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	tDesc.ByteWidth = iByteSize;
+	tDesc.Usage = D3D11_USAGE_DEFAULT;
+
+	D3D11_SUBRESOURCE_DATA tSubData = {};
+	tSubData.pSysMem = m_VtxSysMem;
+
+	if (FAILED(DEVICE->CreateBuffer(&tDesc, &tSubData, m_VB.GetAddressOf())))
+	{
+		assert(nullptr);
+	}
+
+	// 인덱스 정보
+	UINT iMtrlCount = 0;
+	fread(&iMtrlCount, sizeof(int), 1, pFile);
+
+	for (UINT i = 0; i < iMtrlCount; ++i)
+	{
+		tIndexInfo info = {};
+		fread(&info, sizeof(tIndexInfo), 1, pFile);
+
+		UINT iByteWidth = info.iIdxCount * sizeof(UINT);
+
+		void* pSysMem = malloc(iByteWidth);
+		//info.pIdxSysMem = new UINT[info.iIdxCount];
+		info.pIdxSysMem = pSysMem;
+		fread(info.pIdxSysMem, iByteWidth, 1, pFile);
+
+		tSubData.pSysMem = info.pIdxSysMem;
+
+		if (FAILED(DEVICE->CreateBuffer(&info.tIBDesc, &tSubData, info.pIB.GetAddressOf())))
+		{
+			assert(nullptr);
+		}
+
+		m_vecIdxInfo.push_back(info);
+	}
+
+	fclose(pFile);
+
+	return S_OK;
+}
+

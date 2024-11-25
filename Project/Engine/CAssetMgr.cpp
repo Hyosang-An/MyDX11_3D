@@ -91,7 +91,7 @@ Ptr<CMeshData> CAssetMgr::LoadFBX(const wstring& _strPath)
 	m_arrAssetMap[(UINT)ASSET_TYPE::MESH_DATA].insert(make_pair(strName, pMeshData.Get()));
 
 	// meshdata 를 실제파일로 저장
-	//pMeshData->Save(strName);
+	pMeshData->Save(CPathMgr::GetInst()->GetContentPath() + strName);
 
 	return pMeshData;
 }
