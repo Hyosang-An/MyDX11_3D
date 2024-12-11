@@ -39,8 +39,9 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader)
 		tVtxDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 	D3D11_SUBRESOURCE_DATA tSub = {};
-	tSub.pSysMem = malloc(tVtxDesc.ByteWidth);
-	Vtx* pSys = (Vtx*)tSub.pSysMem;
+	//tSub.pSysMem = malloc(tVtxDesc.ByteWidth);
+	Vtx* pSys = new Vtx[iVtxCount];
+	tSub.pSysMem = static_cast<void*>(pSys);
 	for (UINT i = 0; i < iVtxCount; ++i)
 	{
 		pSys[i].vPos = container->vecPos[i];
@@ -76,7 +77,8 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader)
 		if (D3D11_USAGE_DYNAMIC == tIdxDesc.Usage)
 			tIdxDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-		void* pSysMem = malloc(tIdxDesc.ByteWidth);
+		//void* pSysMem = malloc(tIdxDesc.ByteWidth);
+		void* pSysMem = new UINT[tIdxDesc.ByteWidth / sizeof(UINT)];
 		memcpy(pSysMem, container->vecIdx[i].data(), tIdxDesc.ByteWidth);
 		tSub.pSysMem = pSysMem;
 
@@ -257,8 +259,8 @@ int CMesh::Load(const wstring& _FilePath)
 	UINT iByteSize = 0;
 	fread(&iByteSize, sizeof(UINT), 1, pFile);
 
-	m_VtxSysMem = (Vtx*)malloc(iByteSize);
-	//m_VtxSysMem = new Vtx[iByteSize / sizeof(Vtx)];
+	//m_VtxSysMem = (Vtx*)malloc(iByteSize);
+	m_VtxSysMem = new Vtx[iByteSize / sizeof(Vtx)];
 	fread(m_VtxSysMem, 1, iByteSize, pFile);
 
 
@@ -286,8 +288,8 @@ int CMesh::Load(const wstring& _FilePath)
 
 		UINT iByteWidth = info.iIdxCount * sizeof(UINT);
 
-		void* pSysMem = malloc(iByteWidth);
-		//info.pIdxSysMem = new UINT[info.iIdxCount];
+		//void* pSysMem = malloc(iByteWidth);
+		void* pSysMem = new UINT[info.iIdxCount];
 		info.pIdxSysMem = pSysMem;
 		fread(info.pIdxSysMem, iByteWidth, 1, pFile);
 
