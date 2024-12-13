@@ -3,6 +3,8 @@
 
 #include "CFBXLoader.h"
 
+class CStructuredBuffer;
+
 struct tIndexInfo
 {
     ComPtr<ID3D11Buffer>    pIB;
@@ -27,6 +29,13 @@ private:
     // 하나의 버텍스버퍼에 여러개의 인덱스버퍼가 연결
     vector<tIndexInfo>		m_vecIdxInfo;
 
+    // Animation3D 정보
+    vector<tMTAnimClip>		m_vecAnimClip;
+    vector<tMTBone>			m_vecBones;
+
+    CStructuredBuffer*      m_pBoneFrameData = nullptr;   // 전체 본 프레임 정보(크기, 이동, 회전) (프레임 개수만큼)
+    CStructuredBuffer*      m_pBoneInverse= nullptr;	    // 각 뼈의 offset 행렬(각 뼈의 위치를 되돌리는 행렬) (1행 짜리)
+
 
 public:
     static CMesh* CreateFromContainer(CFBXLoader& _loader);
@@ -36,6 +45,13 @@ public:
     UINT GetSubsetCount() { return (UINT)m_vecIdxInfo.size(); }
 
     void* GetVtxSysMem() { return m_VtxSysMem; }
+
+    const vector<tMTBone>* GetBones() { return &m_vecBones; }
+    UINT GetBoneCount() { return (UINT)m_vecBones.size(); }
+    const vector<tMTAnimClip>* GetAnimClip() { return &m_vecAnimClip; }
+    bool IsAnimMesh() { return !m_vecAnimClip.empty(); }
+    CStructuredBuffer* GetBoneFrameDataBuffer() { return m_pBoneFrameData; } // 전체 본 프레임 정보
+    CStructuredBuffer* GetBoneInverseBuffer() { return  m_pBoneInverse; }	   // 각 Bone 의 Inverse 
 
     void Binding(UINT _Subset);
     void Render(UINT _Subset = 0);

@@ -25,6 +25,8 @@ void LoadWString(wstring& _String, FILE* _File);
 
 wstring incrementTrailingNumber(const std::wstring& input);
 
+Matrix GetMatrixFromFbxMatrix(FbxAMatrix& _mat);
+
 template<typename T, int _Size>
 void Delete_Array(T(&_arr)[_Size])
 {

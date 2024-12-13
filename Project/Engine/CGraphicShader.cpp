@@ -48,7 +48,7 @@ int CGraphicShader::CreateVertexShader(const wstring& _RelativePath, const strin
 		, m_VSBlob->GetBufferSize(), nullptr, m_VS.GetAddressOf());
 
 	// Layout »ý¼º
-	D3D11_INPUT_ELEMENT_DESC Element[6] = {};
+	D3D11_INPUT_ELEMENT_DESC Element[8] = {};
 
 	Element[0].AlignedByteOffset = 0;
 	Element[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
@@ -98,7 +98,23 @@ int CGraphicShader::CreateVertexShader(const wstring& _RelativePath, const strin
 	Element[5].SemanticName = "BINORMAL";
 	Element[5].SemanticIndex = 0;
 
-	DEVICE->CreateInputLayout(Element, 6
+	Element[6].SemanticName = "BLENDWEIGHT";
+	Element[6].SemanticIndex = 0;
+	Element[6].AlignedByteOffset = 72;
+	Element[6].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	Element[6].InputSlot = 0;
+	Element[6].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	Element[6].InstanceDataStepRate = 0;
+
+	Element[7].SemanticName = "BLENDINDICES";
+	Element[7].SemanticIndex = 0;
+	Element[7].AlignedByteOffset = 88;
+	Element[7].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	Element[7].InputSlot = 0;
+	Element[7].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	Element[7].InstanceDataStepRate = 0;
+
+	DEVICE->CreateInputLayout(Element, 8
 		, m_VSBlob->GetBufferPointer()
 		, m_VSBlob->GetBufferSize()
 		, m_Layout.GetAddressOf());

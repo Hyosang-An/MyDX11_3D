@@ -247,19 +247,39 @@ void CTestLevel::CreateTestLevel()
 	// FBX Loading
 	// ============	
 	{
+		//Ptr<CMeshData> pMeshData = nullptr;
+		//CGameObject* pObj = nullptr;
+
+		//pMeshData = CAssetMgr::GetInst()->LoadFBX(L"fbx\\house.fbx");
+		//pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"meshdata\\house.mdat");
+		//pObj = pMeshData->Instantiate();
+		//pObj->SetName(L"House");
+
+		//pObj->Transform()->SetRelativePos(Vec3(0.f, 150.f, 100.f));
+		//pObj->Transform()->SetRelativeScale(Vec3(1.f, 1.f, 1.f));
+
+		//TestLevel->AddObject(0, pObj);
+	}
+
+	//// ============
+	//// Animaition Test
+	//// ============	
+	//{
 		Ptr<CMeshData> pMeshData = nullptr;
 		CGameObject* pObj = nullptr;
 
-		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"fbx\\house.fbx");
-		pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"meshdata\\house.mdat");
+		pMeshData = CAssetMgr::GetInst()->LoadFBX(L"fbx\\Monster.fbx");
+		//pMeshData = CAssetMgr::GetInst()->FindAsset<CMeshData>(L"meshdata\\Monster.mdat");
 		pObj = pMeshData->Instantiate();
-		pObj->SetName(L"House");
+		pObj->SetName(L"Monster");
+		pObj->GetRenderComponent()->SetFrustumCheck(false);
 
-		pObj->Transform()->SetRelativePos(Vec3(0.f, 150.f, 100.f));
-		pObj->Transform()->SetRelativeScale(Vec3(1.f, 1.f, 1.f));
+		pObj->Transform()->SetRelativePos(Vec3(200.f, 0.f, 200.f));
+		pObj->Transform()->SetRelativeScale(Vec3(5.f, 5.f, 5.f));
+		pObj->Transform()->SetRelativeRotation(0.f, XM_PI / 2.f, 0.f);
 
 		TestLevel->AddObject(0, pObj);
-	}
+	//}
 
 
 

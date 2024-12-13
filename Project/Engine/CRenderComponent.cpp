@@ -78,7 +78,7 @@ Ptr<CMaterial> CRenderComponent::GetMaterial(UINT _idx)
 	return m_vecMtrls[_idx].pCurMtrl;
 }
 
-Ptr<CMaterial> CRenderComponent::GetSharedMtrl(UINT _idx)
+Ptr<CMaterial> CRenderComponent::GetSharedMaterial(UINT _idx)
 {
 	// _idx ±âº»°ª : 0
 	

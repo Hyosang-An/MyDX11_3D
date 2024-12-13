@@ -61,7 +61,7 @@ public:
 	class CSkyBox* SkyBox() { return (CSkyBox*)GetComponent(COMPONENT_TYPE::SKYBOX); }
 	class CDecal* Decal() { return (CDecal*)GetComponent(COMPONENT_TYPE::DECAL); }
 	class CLandScape* LandScape() { return (CLandScape*)GetComponent(COMPONENT_TYPE::LANDSCAPE); }
-
+	class CAnimator3D* Animator3D() { return (CAnimator3D*)GetComponent(COMPONENT_TYPE::ANIMATOR3D); }
 
 public:
     void Begin();

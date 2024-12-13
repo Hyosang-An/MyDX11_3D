@@ -40,6 +40,7 @@ public:
 	class CSkyBox* SkyBox() { return m_Owner->SkyBox(); }
 	class CDecal* Decal() { return m_Owner->Decal(); }
 	class CLandScape* LandScape() { return m_Owner->LandScape(); }
+	class CAnimator3D* Animator3D() { return m_Owner->Animator3D(); }
 
 
 private:

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CMeshRender.h"
 
+#include "CAnimator3D.h"
 #include "CTransform.h"
 #include "CFlipBookComponent.h"
 
@@ -33,6 +34,21 @@ void CMeshRender::Render()
 
 	// 위치, 크기, 회전 상태정보 바인딩
 	Transform()->Binding();
+
+	// Animator3D Binding
+	if (Animator3D())
+	{
+		Animator3D()->Binding();
+
+		for (UINT i = 0; i < GetMesh()->GetSubsetCount(); ++i)
+		{
+			if (nullptr == GetMaterial(i))
+				continue;
+
+			GetMaterial(i)->SetAnim3D(true); // Animation Mesh 알리기
+			GetMaterial(i)->SetBoneCount(Animator3D()->GetBoneCount());
+		}
+	}
 
 
 	for (UINT i = 0; i < GetMesh()->GetSubsetCount(); ++i)

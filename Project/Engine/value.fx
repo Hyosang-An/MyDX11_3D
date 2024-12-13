@@ -70,7 +70,9 @@ cbuffer MATERIAL : register(b1)
     int g_btexarr_0;
     int g_btexarr_1;
     
-    int2 mtrlpadding;
+    // 3D Animation Á¤º¸
+    int g_iAnim;
+    int g_iBoneCount;
 }
 
 cbuffer SPRITE_INFO : register(b2)
@@ -122,6 +124,9 @@ Texture2D g_AtlasTex : register(t10);
 
 StructuredBuffer<tLightInfo> g_Light2D : register(t11);
 StructuredBuffer<tLightInfo> g_Light3D : register(t12);
+
+// Animation3D Bone Matrix Buffer
+StructuredBuffer<Matrix> g_arrBoneMat : register(t17);
 
 #endif
 

@@ -162,6 +162,8 @@ call EngineHeaderCopy.bat</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="assets.h" />
+    <ClInclude Include="CAnimation3DShader.h" />
+    <ClInclude Include="CAnimator3D.h" />
     <ClInclude Include="CAsset.h" />
     <ClInclude Include="CAssetMgr.h" />
     <ClInclude Include="CCamera.h" />
@@ -227,6 +229,8 @@ call EngineHeaderCopy.bat</Command>
     <ClInclude Include="struct.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CAnimation3DShader.cpp" />
+    <ClCompile Include="CAnimator3D.cpp" />
     <ClCompile Include="CAsset.cpp" />
     <ClCompile Include="CAssetInit.cpp" />
     <ClCompile Include="CAssetMgr.cpp" />
@@ -296,6 +300,12 @@ call EngineHeaderCopy.bat</Command>
     <None Include="SimpleMath.inl" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="animation.fx">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="debug.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>

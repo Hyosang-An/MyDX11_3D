@@ -29,7 +29,7 @@ public:
 
     void SetMaterial(Ptr<CMaterial> _Mtrl, UINT _idx = 0);
     Ptr<CMaterial> GetMaterial(UINT _idx = 0);
-    Ptr<CMaterial> GetSharedMtrl(UINT _idx = 0);
+    Ptr<CMaterial> GetSharedMaterial(UINT _idx = 0);
 
     // 동적재질 생성 및 반환
     Ptr<CMaterial> GetDynamicMaterial(UINT _idx = 0);

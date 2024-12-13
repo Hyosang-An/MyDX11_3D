@@ -27,6 +27,7 @@ public:
 		m_Shader = _OtherMtrl.m_Shader;
 	}
 
+
 private:
 	Ptr<CGraphicShader>     m_Shader;
 
@@ -47,6 +48,10 @@ public:
 
 
 	Ptr<CGraphicShader> GetShader() { return m_Shader; }
+
+
+	void SetAnim3D(bool _bTrue) { m_Const.arrAnimData[0] = (int)_bTrue; }
+	void SetBoneCount(int _iBoneCount) { m_Const.arrAnimData[1] = _iBoneCount; }
 
 public:
 	void Binding();

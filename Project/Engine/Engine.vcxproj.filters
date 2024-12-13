@@ -193,6 +193,10 @@
     <ClInclude Include="CFBXLoader.h">
       <Filter>Module\FBXLoader</Filter>
     </ClInclude>
+    <ClInclude Include="CAnimator3D.h">
+      <Filter>08. Component\05. Animator3D</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnimation3DShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -363,6 +367,10 @@
     <ClCompile Include="CFBXLoader.cpp">
       <Filter>Module\FBXLoader</Filter>
     </ClCompile>
+    <ClCompile Include="CAnimator3D.cpp">
+      <Filter>08. Component\05. Animator3D</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimation3DShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="01. Header">
@@ -560,6 +568,9 @@
     <Filter Include="Module\FBXLoader">
       <UniqueIdentifier>{08093d7c-2947-4889-8fd6-dc5a75c51935}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HLSL\03. Compute\04. Animation3D">
+      <UniqueIdentifier>{c9d9e596-6745-4258-b4a6-96d370706bac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -635,6 +646,9 @@
     </FxCompile>
     <FxCompile Include="weightmap.fx">
       <Filter>HLSL\03. Compute\03. LandScape\WeightMap</Filter>
+    </FxCompile>
+    <FxCompile Include="animation.fx">
+      <Filter>HLSL\02. Render\3D</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
