@@ -30,4 +30,3 @@ public:
     CAnimation3DShader();
     ~CAnimation3DShader();
 };
-

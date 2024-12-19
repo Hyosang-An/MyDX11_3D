@@ -196,7 +196,9 @@
     <ClInclude Include="CAnimator3D.h">
       <Filter>08. Component\05. Animator3D</Filter>
     </ClInclude>
-    <ClInclude Include="CAnimation3DShader.h" />
+    <ClInclude Include="CAnimation3DShader.h">
+      <Filter>HLSL\03. Compute\04. Animation3D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -370,7 +372,9 @@
     <ClCompile Include="CAnimator3D.cpp">
       <Filter>08. Component\05. Animator3D</Filter>
     </ClCompile>
-    <ClCompile Include="CAnimation3DShader.cpp" />
+    <ClCompile Include="CAnimation3DShader.cpp">
+      <Filter>HLSL\03. Compute\04. Animation3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="01. Header">
@@ -648,7 +652,7 @@
       <Filter>HLSL\03. Compute\03. LandScape\WeightMap</Filter>
     </FxCompile>
     <FxCompile Include="animation.fx">
-      <Filter>HLSL\02. Render\3D</Filter>
+      <Filter>HLSL\03. Compute\04. Animation3D</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

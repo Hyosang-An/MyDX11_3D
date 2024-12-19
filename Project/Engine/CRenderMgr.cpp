@@ -200,14 +200,7 @@ void CRenderMgr::RenderStart()
 
 void CRenderMgr::Render(CCamera* _Cam)
 {
-	// ================
-	// Create ShadowMap
-	// ================
-	// 광원 시점에서 물체들의 깊이를 기록
-	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
-	{
-		m_vecLight3D[i]->CreateShadowMap();
-	}
+
 
 	// 오브젝트 분류
 	_Cam->SortGameObject();
@@ -232,11 +225,30 @@ void CRenderMgr::Render(CCamera* _Cam)
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
 	_Cam->render_deferred();
 
+
+
 	// ===============
 	// DECAL RENDERING
 	// ===============
 	m_arrMRT[(UINT)MRT_TYPE::DECAL]->OMSet();
 	_Cam->render_decal();
+
+	// ================
+// Create ShadowMap
+// ================
+// 광원 시점에서 물체들의 깊이를 기록
+	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
+	{
+		m_vecLight3D[i]->CreateShadowMap();
+	}
+
+	// 카메라 변환행렬 설정
+	// 물체가 렌더링될 때 사용할 View, Proj 행렬
+	g_Trans.matView = _Cam->GetViewMat();
+	g_Trans.matProj = _Cam->GetProjMat();
+
+	g_Trans.matViewInv = _Cam->GetViewMatInv();
+	g_Trans.matProjInv = _Cam->GetProjMatInv();
 
 	// ===============
 	// LIGHT RENDERING
@@ -280,6 +292,8 @@ void CRenderMgr::Render(CCamera* _Cam)
 
 	// 정리
 	_Cam->clear();
+
+
 }
 
 void CRenderMgr::Render_Sub(CCamera* _Cam)

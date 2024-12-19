@@ -107,7 +107,7 @@ void CLight3D::CreateShadowMap()
 	m_ShadowMapMRT->OMSet();
 
 	// ShdowMap Mtrl Binding
-	m_ShadowMapMtrl->Binding();
+	// m_ShadowMapMtrl->Binding(); // CRenderComponent의 render_shadowmap으로 이동
 
 	m_Cam->Camera()->SortGameObject_ShadowMap();
 	m_Cam->Camera()->render_shadowmap();

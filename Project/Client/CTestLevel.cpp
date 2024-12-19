@@ -153,14 +153,14 @@ void CTestLevel::CreateTestLevel()
 	pSkyBox->Transform()->SetRelativePos(0.f, 0.f, 0.f);
 	pSkyBox->Transform()->SetRelativeScale(1000.f, 1000.f, 1000.f);
 
-	//Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\SkyWater.dds");
-	////pSkyBoxTex->GenerateMip(6); // 테스트용
-	//pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
-	//pSkyBox->SkyBox()->SetSkyBoxType(CUBE);
-
-	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\Sky02.jpg");
+	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\SkyWater.dds");
+	//pSkyBoxTex->GenerateMip(6); // 테스트용
 	pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
-	pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);
+	pSkyBox->SkyBox()->SetSkyBoxType(CUBE);
+
+	//Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\Sky02.jpg");
+	//pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
+	//pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);
 
 	TestLevel->AddObject(0, pSkyBox);
 

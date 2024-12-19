@@ -6,6 +6,7 @@
 
 #include "CLevel.h"
 #include "CTransform.h"
+#include "CAnimator3D.h"
 
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _Type)
 	: CComponent(_Type)
@@ -126,11 +127,27 @@ void CRenderComponent::render_shadowmap()
 	// 재질은 ShadowMapMtrl 로 이미 Binding 되어있는걸 사용할 것
 	// 자신이 선택한 Mesh 로 렌더링 요청을 하면 된다.
 	Transform()->Binding();
+
+	Ptr<CMaterial> shadowmapMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DirLightShadowMapMtrl");
+	// Animator3D Binding
+	if (Animator3D())
+	{
+		Animator3D()->Binding();
+
+		shadowmapMtrl->SetAnim3D(true); // Animation Mesh 알리기
+		shadowmapMtrl->SetBoneCount(Animator3D()->GetBoneCount());
+	}
+
+	shadowmapMtrl->Binding();
+
 	// 모든 서브셋 메쉬의 깊이를 저장한다.
 	for (int i = 0; i < GetMesh()->GetSubsetCount(); ++i)
 	{
 		GetMesh()->Render(i);
 	}
+
+	shadowmapMtrl->SetAnim3D(false); // clear
+	shadowmapMtrl->SetBoneCount(0);
 }
 
 void CRenderComponent::SaveAssetDataToFile(FILE* _File)
